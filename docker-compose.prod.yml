@@ -1,0 +1,301 @@
+# Docker Compose file for grimOS
+# Production environment configuration
+
+version: '3.8'
+
+services:
+  # Data Infrastructure with production settings
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-grimos}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis}
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    restart: always
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      KAFKA_LOG_RETENTION_HOURS: 168
+    restart: always
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  mongo:
+    image: mongo:6-jammy
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password}
+    volumes:
+      - mongo_data:/data/db
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - CHROMA_DB_IMPL=duckdb+parquet
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - CHROMA_SERVER_AUTH_CREDENTIALS_FILE=/chroma/chroma_credentials.json
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - COGNITIVE_CORE_URL=http://cognitive-core:8001
+      - COMPOSABLE_RUNES_URL=http://composable-runes:8002
+      - INTEROPERABILITY_URL=http://interoperability:8003
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=production
+      - PORT=8080
+    depends_on:
+      - backend
+      - cognitive-core
+      - composable-runes
+      - interoperability
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # Core Services
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-grimos}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redis}@redis:6379/0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=production
+      - PORT=8000
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  cognitive-core:
+    build:
+      context: ./services/ai
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-grimos}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redis}@redis:6379/1
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - VECTOR_DB_HOST=chroma
+      - VECTOR_DB_PORT=8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=production
+      - PORT=8001
+      - LOG_LEVEL=INFO
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - chroma
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+
+  composable-runes:
+    build:
+      context: ./services/composable-runes
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-grimos}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redis}@redis:6379/2
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - COGNITIVE_CORE_URL=http://cognitive-core:8001
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=production
+      - PORT=8002
+      - LOG_LEVEL=INFO
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - cognitive-core
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  interoperability:
+    build:
+      context: ./services/interoperability
+      dockerfile: Dockerfile.prod
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-grimos}
+      - REDIS_URL=redis://:${REDIS_PASSWORD:-redis}@redis:6379/3
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - MONGO_CONNECTION_STRING=mongodb://${MONGO_USERNAME:-admin}:${MONGO_PASSWORD:-password}@mongo:27017
+      - MONGO_DB_NAME=grimos_integration
+      - SECRET_KEY=${SECRET_KEY}
+      - CREDENTIAL_ENCRYPTION_KEY=${CREDENTIAL_ENCRYPTION_KEY}
+      - ENVIRONMENT=production
+      - PORT=8003
+      - LOG_LEVEL=INFO
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - mongo
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # Frontend
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8080}
+    restart: always
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - api-gateway
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+
+  # Load balancer for services
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - api-gateway
+      - frontend
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  mongo_data:
+    driver: local
+  chroma_data:
+    driver: local
+  kafka_data:
+    driver: local
+  zookeeper_data:
+    driver: local
+  zookeeper_log:
+    driver: local
+  nginx_logs:
+    driver: local

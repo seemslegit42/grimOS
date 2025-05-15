@@ -10,16 +10,25 @@ import os
 from contextlib import asynccontextmanager
 from typing import Dict, List, Any, Optional
 
-from app.core.config import settings
-from app.core.logging import configure_logging
-from app.core.auth import verify_token
-from app.api.router import api_router
-from app.services.service_registry import ServiceRegistry
-from app.services.rate_limiter import RateLimiter
-
-
 # Setup logging
-logger = configure_logging()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger("api-gateway")
+
+
+# Define service URLs from environment variables
+SERVICE_URLS = {
+    "backend": os.getenv("BACKEND_URL", "http://backend:8000"),
+    "cognitive-core": os.getenv("COGNITIVE_CORE_URL", "http://cognitive-core:8001"),
+    "composable-runes": os.getenv("COMPOSABLE_RUNES_URL", "http://composable-runes:8002"),
+    "interoperability": os.getenv("INTEROPERABILITY_URL", "http://interoperability:8003"),
+}
+
+# Secret key for JWT token validation
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 
 @asynccontextmanager
@@ -29,6 +38,20 @@ async def lifespan(app: FastAPI):
     
     # Create and configure HTTP clients for backend services
     app.state.http_client = httpx.AsyncClient(timeout=30.0)
+    
+    # Register services
+    app.state.service_registry = {
+        "backend": {"url": SERVICE_URLS["backend"], "health": True},
+        "cognitive-core": {"url": SERVICE_URLS["cognitive-core"], "health": True},
+        "composable-runes": {"url": SERVICE_URLS["composable-runes"], "health": True},
+        "interoperability": {"url": SERVICE_URLS["interoperability"], "health": True},
+    }
+    
+    yield
+    
+    # Shutdown: close clients
+    logger.info("Shutting down API Gateway service")
+    await app.state.http_client.aclose()
     app.state.service_registry = ServiceRegistry()
     app.state.rate_limiter = RateLimiter()
     

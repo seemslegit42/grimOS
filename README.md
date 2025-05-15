@@ -1,24 +1,35 @@
 # grimOS Platform
 
-grimOS is a comprehensive platform for security operations, workflow automation, and cognitive analysis. It consists of three main modules:
+grimOS (Grimoire™) is a comprehensive AI-powered operating system that brings together agents, workflows, interoperability, and natural language interaction to transform enterprise operations. The platform consists of several core modules:
 
-1. **Security Module**: Threat intelligence and user behavior analytics
-2. **Operations Module**: Workflow management and data integration
-3. **Cognitive Core Module**: AI-powered analysis and natural language processing
+1. **Cognitive Core**: AI agent lifecycle management, collaboration, predictive intelligence
+2. **Composable Runes**: Low-code workflow designer and execution engine
+3. **Interoperability Engine**: Integration with external enterprise systems (iPaaS)
+4. **Security Module**: Threat intelligence, UBA, and security orchestration
+5. **Operations Module**: Workflow automation and business process management
 
 ## Architecture Overview
 
-grimOS uses a modern architecture with the following components:
+grimOS uses a modern, microservices-based architecture with the following components:
 
-- **Backend**: FastAPI-based REST API with PostgreSQL database
-- **Frontend**: React-based web interface (separate repository)
-- **Services**: Redis for caching, Kafka for event processing
+- **Presentation Tier**: Next.js frontend with React, shadcn/ui, Tailwind CSS
+- **API Tier**: Universal API Fabric & API Gateway
+- **Application Tier**: Microservices including Cognitive Core, Composable Runes, etc.
+- **Messaging & Event Bus**: Apache Kafka for event-driven communication
+- **Data Tier**: PostgreSQL, Redis, ChromaDB (vector database), and more
 
 ## Project Structure
 
-- `/apps/backend`: Python backend application
-- `/apps/frontend`: Frontend application (optional)
-- `/docs`: API documentation and specifications
+- `/apps/backend`: Main backend application
+- `/apps/frontend`: Next.js frontend application
+- `/services`: Microservices components
+  - `/services/ai`: Cognitive Core service
+  - `/services/composable-runes`: Workflow engine service
+  - `/services/interoperability`: Integration service
+  - `/services/api-gateway`: API Gateway service
+- `/packages`: Shared libraries and utilities
+- `/docs`: Documentation and specifications
+- `/charts`: Kubernetes deployment configurations
 - `/deploy`: Deployment scripts and configurations
 
 <a href="https://blazity.com/">

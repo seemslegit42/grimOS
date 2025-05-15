@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 
 from app.core.config import settings
 from app.core.logging import configure_logging
+from app.core.database import init_db, close_db_connections
 from app.api.api_v1.api import api_router
 
 
@@ -20,9 +21,13 @@ logger = configure_logging()
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting Interoperability Engine service")
+    await init_db()
+    logger.info("Database connections initialized")
     yield
     # Shutdown
     logger.info("Shutting down Interoperability Engine service")
+    await close_db_connections()
+    logger.info("Database connections closed")
 
 
 app = FastAPI(

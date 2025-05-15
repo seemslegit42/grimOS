@@ -1,0 +1,199 @@
+# Docker Compose file for grimOS
+# This is the development environment configuration
+
+version: '3.8'
+
+services:
+  # Data Infrastructure
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grimos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - "8010:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - ALLOW_RESET=true
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=*
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./services/api-gateway:/app
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - COGNITIVE_CORE_URL=http://cognitive-core:8001
+      - COMPOSABLE_RUNES_URL=http://composable-runes:8002
+      - INTEROPERABILITY_URL=http://interoperability:8003
+      - SECRET_KEY=dev-secret-key
+      - ENVIRONMENT=development
+    depends_on:
+      - backend
+      - cognitive-core
+      - composable-runes
+      - interoperability
+
+  # Core Services
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./apps/backend:/app
+    environment:
+      - DATABASE_URL=postgresql+psycopg://postgres:postgres@postgres:5432/grimos
+      - REDIS_URL=redis://redis:6379/0
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - ALLOWED_ORIGINS=http://localhost:3000
+      - SECRET_KEY=dev-secret-key
+      - ENVIRONMENT=development
+      - DEBUG=true
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+
+  cognitive-core:
+    build:
+      context: ./services/ai
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./services/ai:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/grimos
+      - REDIS_URL=redis://redis:6379/1
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - VECTOR_DB_HOST=chroma
+      - VECTOR_DB_PORT=8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - SECRET_KEY=dev-secret-key
+      - ENVIRONMENT=development
+      - PORT=8001
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - chroma
+
+  composable-runes:
+    build:
+      context: ./services/composable-runes
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./services/composable-runes:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/grimos
+      - REDIS_URL=redis://redis:6379/2
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - COGNITIVE_CORE_URL=http://cognitive-core:8001
+      - SECRET_KEY=dev-secret-key
+      - ENVIRONMENT=development
+      - PORT=8002
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+      - cognitive-core
+
+  interoperability:
+    build:
+      context: ./services/interoperability
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./services/interoperability:/app
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/grimos
+      - REDIS_URL=redis://redis:6379/3
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SECRET_KEY=dev-secret-key
+      - ENVIRONMENT=development
+      - PORT=8003
+    depends_on:
+      - postgres
+      - redis
+      - kafka
+
+  # Frontend
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/frontend:/app
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:8080
+      - NODE_ENV=development
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres_data:
+  redis_data:
+  chroma_data:

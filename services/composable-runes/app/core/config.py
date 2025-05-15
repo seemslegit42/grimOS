@@ -16,8 +16,7 @@ class Settings(BaseSettings):
     # Security
     SECRET_KEY: str = "your-secret-key-here"  # Change in production
     SERVICE_SECRET_KEY: str = "your-service-secret-key-here"  # Change in production
-    
-    # Database settings
+      # Database settings
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@postgres:5432/grimos"
     SQL_ECHO: bool = False
     
@@ -27,12 +26,15 @@ class Settings(BaseSettings):
     # Kafka settings
     KAFKA_BOOTSTRAP_SERVERS: str = "kafka:29092"
     KAFKA_CONSUMER_GROUP: str = "composable-runes"
+    KAFKA_TOPIC_WORKFLOW_EXECUTION: str = "workflow-execution"
     
     # Cognitive Core API
     COGNITIVE_CORE_URL: str = "http://cognitive-core:8001"
     
-    # Logging
+    # Application settings
     LOG_LEVEL: str = "INFO"
+    ENVIRONMENT: str = "development"
+    MAX_WORKFLOW_EXECUTION_TIME: int = 300  # seconds
     
     # CORS settings
     ALLOWED_ORIGINS: List[str] = ["*"]
