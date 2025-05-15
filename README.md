@@ -1,5 +1,4 @@
-
-# [Next.js Enterprise Boilerplate](https://blazity.com/open-source/nextjs-enterprise-boilerplate) 
+# [Next.js Enterprise Boilerplate](https://blazity.com/open-source/nextjs-enterprise-boilerplate)
 
 A production-ready template for building enterprise applications with Next.js. This boilerplate provides a solid foundation with carefully selected technologies and ready-to-go infrastructure to help you develop high-quality applications efficiently.
 
@@ -15,10 +14,7 @@ While most Next.js boilerplates focus on individual developer needs with excessi
 </picture>
 </a>
 
-> [!NOTE]
-> **Blazity** is a group of Next.js architects. We help organizations architect, optimize, and deploy high-performance Next.js applications at scale. Contact us at [contact@blazity.com](https://blazity.com) if you’d like to talk about your project.
-
-
+> [!NOTE] > **Blazity** is a group of Next.js architects. We help organizations architect, optimize, and deploy high-performance Next.js applications at scale. Contact us at [contact@blazity.com](https://blazity.com) if you’d like to talk about your project.
 
 ## Documentation
 
@@ -29,12 +25,13 @@ We encourage you to [visit our docs (docs.blazity.com)](https://docs.blazity.com
 ## Integrated features
 
 ### Boilerplate
+
 With this template you will get all the boilerplate features included:
 
 * [Next.js 15](https://nextjs.org/) - Performance-optimized configuration using App Directory
 * [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework for efficient UI development
 * [ESlint 9](https://eslint.org/) and [Prettier](https://prettier.io/) - Code consistency and error prevention
-* [Corepack](https://github.com/nodejs/corepack) & [pnpm](https://pnpm.io/) as the package manager - For project management without compromises 
+* [Corepack](https://github.com/nodejs/corepack) & [pnpm](https://pnpm.io/) as the package manager - For project management without compromises
 * [Strict TypeScript](https://www.typescriptlang.org/) - Enhanced type safety with carefully crafted config and [ts-reset](https://github.com/total-typescript/ts-reset) library
 * [GitHub Actions](https://github.com/features/actions) - Pre-configured workflows including bundle size and performance tracking
 * Perfect Lighthouse score - Optimized performance metrics
@@ -73,16 +70,16 @@ Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart wit
 * **AWS (Amazon Web Services)**
   * Automated provisioning of AWS infrastructure
   * Scalable & secure setup using:
-     * VPC - Isolated network infrastructure
-     * Elastic Container Service (ECS) - Container orchestration
-     * Elastic Container Registry (ECR) - Container image storage
-     * Application Load Balancer - Traffic distribution
-     * S3 + CloudFront - Static asset delivery and caching
-     * AWS WAF - Web Application Firewall protection
-     * Redis Cluster - Caching
+    * VPC - Isolated network infrastructure
+    * Elastic Container Service (ECS) - Container orchestration
+    * Elastic Container Registry (ECR) - Container image storage
+    * Application Load Balancer - Traffic distribution
+    * S3 + CloudFront - Static asset delivery and caching
+    * AWS WAF - Web Application Firewall protection
+    * Redis Cluster - Caching
   * CI/CD ready - Continuous integration and deployment pipeline
 
-*... more coming soon*
+_... more coming soon_
 
 ### Team & maintenance
 
@@ -90,16 +87,16 @@ Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart wit
 
 #### Active maintainers
 
-- Igor Klepacki ([neg4n](https://github.com/neg4n)) - Open Source Software Developer
-- Tomasz Czechowski ([tomaszczechowski](https://github.com/tomaszczechowski)) - Solutions Architect & DevOps
-- Jakub Jabłoński ([jjablonski-it](https://github.com/jjablonski-it)) - Head of Integrations
+* Igor Klepacki ([neg4n](https://github.com/neg4n)) - Open Source Software Developer
+* Tomasz Czechowski ([tomaszczechowski](https://github.com/tomaszczechowski)) - Solutions Architect & DevOps
+* Jakub Jabłoński ([jjablonski-it](https://github.com/jjablonski-it)) - Head of Integrations
 
 #### All-time contributors
+
 [bmstefanski](https://github.com/bmstefanski)
 
 ## License
 
 MIT
-
 
 [docs]: https://docs.blazity.com/next-enterprise/deployments/enterprise-cli

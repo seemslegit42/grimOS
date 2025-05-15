@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package user;
+
+// User service definition
+service UserService {
+  // Get user profile by ID
+  rpc GetUserProfile(UserProfileRequest) returns (UserProfileResponse);
+  
+  // Update user profile
+  rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UserProfileResponse);
+  
+  // Get user preferences
+  rpc GetUserPreferences(UserPreferencesRequest) returns (UserPreferencesResponse);
+  
+  // Update user preferences
+  rpc UpdateUserPreferences(UpdateUserPreferencesRequest) returns (UserPreferencesResponse);
+  
+  // Get user activity
+  rpc GetUserActivity(UserActivityRequest) returns (UserActivityResponse);
+  
+  // Record user activity
+  rpc RecordUserActivity(RecordUserActivityRequest) returns (RecordUserActivityResponse);
+  
+  // Get user by email
+  rpc GetUserByEmail(UserEmailRequest) returns (UserProfileResponse);
+  
+  // Search users
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersResponse);
+  
+  // Health check
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// User profile request
+message UserProfileRequest {
+  string user_id = 1;
+}
+
+// User profile response
+message UserProfileResponse {
+  string user_id = 1;
+  string email = 2;
+  string full_name = 3;
+  string display_name = 4;
+  string avatar_url = 5;
+  string bio = 6;
+  string location = 7;
+  string website = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+}
+
+// Update user profile request
+message UpdateUserProfileRequest {
+  string user_id = 1;
+  optional string display_name = 2;
+  optional string avatar_url = 3;
+  optional string bio = 4;
+  optional string location = 5;
+  optional string website = 6;
+}
+
+// User preferences request
+message UserPreferencesRequest {
+  string user_id = 1;
+}
+
+// User preferences response
+message UserPreferencesResponse {
+  string user_id = 1;
+  string theme = 2;
+  string language = 3;
+  bool notifications_enabled = 4;
+  repeated string notification_channels = 5;
+  map<string, string> additional_preferences = 6;
+}
+
+// Update user preferences request
+message UpdateUserPreferencesRequest {
+  string user_id = 1;
+  optional string theme = 2;
+  optional string language = 3;
+  optional bool notifications_enabled = 4;
+  repeated string notification_channels = 5;
+  map<string, string> additional_preferences = 6;
+}
+
+// User activity request
+message UserActivityRequest {
+  string user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+// User activity response
+message UserActivityResponse {
+  string user_id = 1;
+  repeated Activity activities = 2;
+  int32 total_count = 3;
+}
+
+// Activity message
+message Activity {
+  string id = 1;
+  string user_id = 2;
+  string activity_type = 3;
+  string description = 4;
+  map<string, string> metadata = 5;
+  int64 created_at = 6;
+}
+
+// Record user activity request
+message RecordUserActivityRequest {
+  string user_id = 1;
+  string activity_type = 2;
+  string description = 3;
+  map<string, string> metadata = 4;
+}
+
+// Record user activity response
+message RecordUserActivityResponse {
+  string activity_id = 1;
+  bool success = 2;
+}
+
+// User email request
+message UserEmailRequest {
+  string email = 1;
+}
+
+// Search users request
+message SearchUsersRequest {
+  string query = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  repeated string filters = 4;
+}
+
+// Search users response
+message SearchUsersResponse {
+  repeated UserProfileResponse users = 1;
+  int32 total_count = 2;
+}
+
+// Health check request
+message HealthCheckRequest {
+  string service = 1;
+}
+
+// Health check response
+message HealthCheckResponse {
+  bool status = 1;
+  string message = 2;
+  int64 timestamp = 3;
+}

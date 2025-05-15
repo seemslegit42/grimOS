@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #121212;
+  --primary-accent: #7ED321;
+  --secondary-accent: #00BFFF;
+  --tertiary-accent: #FF1D58;
+}
+
+html,
+body {
+  @apply bg-background text-white;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar for the glassmorphic theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Subtle background pattern for the main background */
+.bg-pattern {
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+}
+
+/* Glassmorphic utility classes */
+.glassmorphic-light {
+  @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg;
+}
+
+.glassmorphic-medium {
+  @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-lg;
+}
+
+.glassmorphic-heavy {
+  @apply bg-white/15 backdrop-blur-xl border border-white/30 rounded-lg;
+}
+
+/* Animation for data streams in the background */
+@keyframes dataStream {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.data-stream-bg {
+  background: linear-gradient(
+    45deg,
+    rgba(126, 211, 33, 0.05) 0%,
+    rgba(0, 191, 255, 0.05) 25%,
+    rgba(255, 29, 88, 0.05) 50%,
+    rgba(0, 191, 255, 0.05) 75%,
+    rgba(126, 211, 33, 0.05) 100%
+  );
+  background-size: 400% 400%;
+  animation: dataStream 15s ease infinite;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  @apply outline-none ring-2 ring-primary-accent/50 ring-offset-1 ring-offset-background;
+}

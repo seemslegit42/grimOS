@@ -1,0 +1,36 @@
+# Build artifacts
+.next/
+dist/
+build/
+storybook-static/
+
+# Dependencies
+node_modules/
+
+# Cache and temporary files
+.turbo/
+coverage/
+.coverage/
+__pycache__/
+*.pyc
+
+# Configuration and tooling
+.storybook/
+.git/
+.github/
+.vscode/
+
+# Generated files
+*.min.js
+*.d.ts
+*.generated.*
+
+# Config files (often have custom formats)
+*.config.js
+*.config.ts
+next.config.*
+
+# Large data files
+*.csv
+*.json.gz
+*.parquet

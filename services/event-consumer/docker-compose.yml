@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  event-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_USER_EVENTS_TOPIC=user-events
+      - KAFKA_GROUP_ID=user-events-consumer
+      - KAFKA_AUTO_OFFSET_RESET=earliest
+      - LOG_LEVEL=INFO
+      - ENVIRONMENT=local
+    volumes:
+      - .:/app
+    depends_on:
+      - kafka
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    external: true

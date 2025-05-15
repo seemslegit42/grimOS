@@ -1,0 +1,230 @@
+# Global values shared across all charts
+global:
+  environment: development
+  imageRegistry: ""
+  imagePullSecrets: []
+  podAnnotations: {}
+
+# Frontend service configuration
+frontend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: grimoire/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+
+# Backend service configuration
+backend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: grimoire/backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+  
+# Auth microservice configuration
+auth:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: grimoire/auth
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  ingress:
+    enabled: false
+    className: "traefik"
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
+    hosts:
+      - host: auth.grimoire.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+  configMap:
+    enabled: true
+    data:
+      ENVIRONMENT: "{{ .Values.global.environment | default .Release.Namespace }}"
+      POSTGRES_SERVER: "{{ .Release.Name }}-postgres"
+      POSTGRES_DB: "auth_db"
+      POSTGRES_USER: "postgres"
+      BACKEND_CORS_ORIGINS: '["http://localhost:3000", "http://grimoire.local"]'
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      REFRESH_TOKEN_EXPIRE_DAYS: "7"
+  secrets:
+    enabled: true
+    data:
+      POSTGRES_PASSWORD: "postgres"
+      SECRET_KEY: "supersecretkey"
+      SERVICE_SECRET_KEY: "servicesecretkey"
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  
+# API Gateway configuration
+apiGateway:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: grimoire/api-gateway
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: true
+    className: "traefik"
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    hosts:
+      - host: grimoire.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: grimoire-tls
+        hosts:
+          - grimoire.local
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 80
+  configMap:
+    enabled: true
+    data:
+      NODE_ENV: "{{ .Values.global.environment }}"
+      AUTH_SERVICE_URL: "http://{{ .Release.Name }}-grimoire-auth:8000"
+      CORS_ORIGIN: "http://grimoire.local"
+      LOG_LEVEL: "info"
+  secrets:
+    enabled: true
+    data:
+      JWT_SECRET_KEY: "{{ .Values.auth.secrets.data.SECRET_KEY }}"
+      SERVICE_SECRET_KEY: "{{ .Values.auth.secrets.data.SERVICE_SECRET_KEY }}"
+
+# Redis configuration (for caching)
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: "redis-password"
+  master:
+    persistence:
+      enabled: true
+      size: 1Gi
+
+# Ingress configuration with Traefik
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+
+# Persistent volume claims
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+# Database configuration (PostgreSQL)
+postgresql:
+  enabled: true
+  architecture: standalone
+  auth:
+    username: postgres
+    password: postgres
+    database: auth_db
+  primary:
+    persistence:
+      enabled: true
+      size: 2Gi
+  readReplicas:
+    replicaCount: 0
+
+# Monitoring and observability
+prometheus:
+  enabled: false
+
+grafana:
+  enabled: false
+
+# Sentry for error tracking
+sentry:
+  enabled: false
+  dsn: ""
+    database: grimoire
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi

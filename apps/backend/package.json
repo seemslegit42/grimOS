@@ -1,0 +1,14 @@
+{
+  "name": "@grimos/backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd app && uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "start": "cd app && uvicorn main:app --host 0.0.0.0 --port 8000",
+    "build": "echo 'No build step for Python backend'",
+    "lint": "cd app && ruff check .",
+    "format": "cd app && ruff format .",
+    "test": "cd app && pytest",
+    "clean": "rm -rf __pycache__ .pytest_cache"
+  }
+}

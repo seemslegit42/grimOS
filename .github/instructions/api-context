@@ -1,0 +1,1312 @@
+file: ./content/docs/agent-bridge/index.mdx
+meta: {
+  "title": "Getting Started",
+  "description": "Get to know the project, philosophy and how to use it.",
+  "icon": "Telescope"
+}
+        
+## Introduction
+
+AgentBridge protocol is a format designed to make APIs more accessible and understandable for AI agents. It enhances standard API specifications with:
+
+<Cards>
+  <Card href="/agent-bridge/v1_0/design#ai-first" icon={<BrainCircuit className="text-purple-300" />} title="AI-First Design">
+    Optimized for LLM consumption with clear, semantic descriptions
+  </Card>
+
+  <Card href="/agent-bridge/v1_0/design#flow-oriented" icon={<Workflow className="text-blue-300" />} title="Flow-Oriented">
+    Focuses on complete workflows rather than isolated endpoints
+  </Card>
+
+  <Card href="/agent-bridge/v1_0/design#semantic-understanding" icon={<Blocks />} title="Semantic Understanding">
+    Goes beyond syntax to capture the purpose of API operations
+  </Card>
+</Cards>
+
+## Integrating into your projects
+
+AgentBridge comes with a CLI tool and a TypeScript client library, making integration plain and simple:
+
+<Cards>
+  <Card href="/agent-bridge/packages/cli" title="CLI" description="Convert or migrate OpenAPI definitions to AgentBridge protocol" />
+
+  <Card href="/agent-bridge/packages/client" title="Client Library" description="Execute actions and flows from AgentBridge protocol specifications" />
+</Cards>
+
+
+file: ./content/docs/enterprise-commerce/index.mdx
+meta: {
+  "title": "Enterprise Commerce",
+  "description": "Build a scalable, secure, and performant e-commerce platform with Next.js"
+}
+        
+In progress...
+
+
+file: ./content/docs/next-enterprise/index.mdx
+meta: {
+  "title": "Getting Started",
+  "description": "Get to know the project, philosophy and how to use it.",
+  "icon": "Telescope"
+}
+        
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+# Introduction
+
+`next-enterprise` is an carefully crafted Next.js boilerplate for enterprise, high-performance, maintainable applications and fast iterating teams.
+
+Packed with features like **TailwindCSS v4**, **Extremely strict TypeScript**, **ESLint 9**, **Prettier**, **testing tools** and more to accelerate your development and help to bootstrap your project faster.
+
+## Philosophy
+
+While numerous **Next.js** boilerplates exist in the market today, the majority are designed to address individual developer requirements rather than the strategic needs of development teams, particularly those operating in enterprise environments.
+
+Many solutions incorporate excessive features and tooling that add complexity without proportional value. In `next-enterprise`, based on our enterprise clients, we recognize that operational efficiency originates from strategic simplicity.
+
+Our solution delivers a streamlined, enterprise-ready foundation with carefully selected, high-impact features and tools that maximize developer productivity and accelerate time-to-market for your business-critical applications.
+
+## Documentation purpose
+
+This documentation serves as a comprehensive technical reference for the project features and a practical guide for enterprise application development. It incorporates knowledge gained from our work with large organizations. You will find detailed guidelines, best practices, and recommendations, along with explanations of our decision-making process that emphasizes business value.
+
+## Installation
+
+<Steps>
+  <Step>
+    ### Clone the project
+
+    ```bash
+    git clone https://github.com/blazity/next-enterprise.git
+    ```
+
+    *...or using GitHub CLI*
+
+    ```bash
+    gh repo clone blazity/next-enterprise
+    ```
+  </Step>
+
+  <Step>
+    ### Enable corepack
+
+    ```bash
+    corepack enable && corepack enable npm
+    ```
+
+    This needs to be done only once - you do not need to run it again for other projects. The `corepack enable npm` command may seem unreasonable as we are using `pnpm`. It is well explained in the [Matt's TotalTypeScript article](https://www.totaltypescript.com/how-to-use-corepack#why-do-we-need-corepack-enable-npm)
+  </Step>
+
+  <Step>
+    ### Install dependencies
+
+    ```bash
+    pnpm install --frozen-lockfile
+    ```
+  </Step>
+
+  <Step>
+    ### Run the project
+
+    ```bash
+    pnpm dev
+    ```
+  </Step>
+</Steps>
+
+You can now begin development on your project. We recommend reviewing the rest of the documentation to understand the project structure and the business benefits our configuration provides.
+
+
+file: ./content/docs/agent-bridge/packages/cli.mdx
+meta: {
+  "title": "CLI",
+  "description": "Convert or migrate OpenAPI definitions to AgentBridge protocol",
+  "icon": "SquareTerminal"
+}
+        
+## Usage
+
+Run the CLI to convert an OpenAPI/Swagger file to AgentBridge:
+
+<Tabs groupId="package-manager" persist items={['npm', 'pnpm', 'bun']}>
+  ```bash tab="npm"
+  npx @agent-bridge/cli
+  ```
+
+  ```bash tab="pnpm"
+  pnpm dlx @agent-bridge/cli
+  ```
+
+  ```bash tab="bun"
+  bunx @agent-bridge/cli
+  ```
+</Tabs>
+
+CLI will prompt you for the `ANTHROPIC_API_KEY` environment variable if it's not already set, nonetheless, it's required to run. You can find your API key in the [Anthropic console](https://console.anthropic.com/).
+
+### Options
+
+| Option       | Alias                    | Description                                                 |
+| ------------ | ------------------------ | ----------------------------------------------------------- |
+| `-V`         | `--version`              | Output the version number                                   |
+| `-o`         | `--output <path>`        | Output file path (default: `agentbridge.json`)              |
+| `--no-cache` | -                        | Disable LLM response caching                                |
+| `-d`         | `--debug`                | Enable debug mode with detailed output                      |
+| `-v`         | `--verbose`              | Enable verbose logging with detailed processing information |
+| `-c`         | `--concurrency <number>` | Number of endpoints to process in parallel (default: `3`)   |
+| `-h`         | `--help`                 | Display help for command                                    |
+
+### Performance tuning
+
+#### Concurrency
+
+The `-c` or `--concurrency` flag controls how many endpoints are processed simultaneously. Higher values can speed up processing for large APIs but may increase the likelihood of hitting rate limits. Default is `5`.
+
+#### Rate limit handling
+
+The CLI automatically handles Anthropic API rate limits:
+
+* Uses the retry-after header from Anthropic for precise backoff timing
+* Implements exponential backoff with jitter when headers aren't available
+* Scales retry attempts based on concurrency settings
+* Provides detailed logs about rate limit status when in verbose mode
+
+<Callout title="If you frequently encounter rate limit errors, try:" type="warn">
+  1. Reducing the concurrency value
+  2. Using the cache (enabled by default) to reduce API calls in subsequent runs
+  3. Upgrading your Anthropic API tier for higher rate limits
+</Callout>
+
+## Features
+
+* Parse OpenAPI/Swagger specifications
+* Enhance API descriptions with AI
+* Detect multi-step workflows
+* Map data flows between endpoints
+* Debug mode with detailed processing information
+* Token usage tracking and cost estimation
+* Intelligent rate limit handling with automatic retries
+* Parallel processing of endpoints with configurable concurrency
+
+
+file: ./content/docs/agent-bridge/packages/client.mdx
+meta: {
+  "title": "TypeScript Library",
+  "description": "Seamlessly integrate AgentBridge-defined APIs with AI agents through AI SDK",
+  "icon": "Fa6BrandsJS"
+}
+        
+## Installation
+
+<Tabs groupId="package-manager" persist items={['npm', 'pnpm', 'yarn', 'bun']}>
+  ```bash tab="npm"
+  npm install @agent-bridge/client
+  ```
+
+  ```bash tab="pnpm"
+  pnpm install @agent-bridge/client
+  ```
+
+  ```bash tab="yarn"
+  yarn add @agent-bridge/client
+  ```
+
+  ```bash tab="bun"
+  bun install @agent-bridge/client
+  ```
+</Tabs>
+
+## Usage
+
+This library is currently tailored to work with the [AI SDK](https://github.com/vercel/ai), providing a simple interface for interacting with AgentBridge-defined APIs.
+
+Support beyond AI SDK is on the roadmap. While technically it can be used in other contexts, DX may be worse.
+
+### Loading a Schema
+
+You can load an AgentBridge schema from either a local file or a remote URL:
+
+```ts
+import { readSchemaFromFile, fetchSchemaFromUrl } from "@agent-bridge/client";
+
+// From a local file
+const localSchema = await readSchemaFromFile("./path/to/schema.json");
+
+// From a remote URL
+const remoteSchema = await fetchSchemaFromUrl(
+  "https://api.example.com/schema.json"
+);
+```
+
+### Creating a Client
+
+```ts
+import { AgentBridgeClient, LogLevel } from "@agent-bridge/client";
+
+const client = AgentBridgeClient(schema, { apiKey: "your-api-key" }, LogLevel.INFO);
+```
+
+### Usage with Vercel AI SDK
+
+```ts
+import { openai } from "@ai-sdk/openai";
+import { generateText } from "ai";
+
+// ... code to initialize the client
+
+const { messages } = await req.json();
+
+const { text } = await generateText({
+  model: openai("gpt-4o"),
+  messages,
+  tools: client.getTools(),
+});
+```
+
+### Logging
+
+The client includes a configurable logging system:
+
+```ts
+// Set log level during initialization
+const client = new AgentBridgeClient(schema, credentials, LogLevel.DEBUG);
+
+// Or change it later
+client.setLogLevel(LogLevel.TRACE);
+```
+
+Available log levels: `NONE`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`
+
+## Methods
+
+### executeAction
+
+A method that executes a single API action. Returns a promise that resolves to the action result.
+
+```ts
+const result = await client.executeAction("get_weather", { city: "London" });
+```
+
+### executeFlow
+
+A method that executes a multi-step flow. Returns a promise that resolves to the flow result.
+
+```ts
+const result = await client.executeFlow("aviation_weather_briefing", {
+  date: "2023-03-01",
+  atsu: "LHR",
+  time: "1200",
+});
+```
+
+### getTools
+
+A method that returns a list of tools in `ToolSet` type from `ai-sdk` library.
+
+```ts
+const tools = client.getTools();
+```
+
+### listFlows
+
+A method that returns a list of flows that can be executed.
+
+```ts
+const flows = client.listFlows();
+```
+
+### listActions
+
+A method that returns a list of actions that can be executed.
+
+```ts
+const actions = client.listActions();
+```
+
+### setLogLevel
+
+A method that sets the log level, controlling the verbosity of the client's logging output.
+
+```ts
+client.setLogLevel(LogLevel.DEBUG);
+```
+
+## Helpers
+
+### readSchemaFromFile
+
+A helper function that reads a AgentBridge schema from a local file.
+
+```ts
+import { readSchemaFromFile } from "@agent-bridge/client";
+
+const schema = await readSchemaFromFile("./path/to/schema.json");
+```
+
+### fetchSchemaFromUrl
+
+A helper function that fetches a AgentBridge schema from a remote URL.
+
+```ts
+import { fetchSchemaFromUrl } from "@agent-bridge/client";
+
+const schema = await fetchSchemaFromUrl("https://api.example.com/schema.json");
+```
+
+
+file: ./content/docs/agent-bridge/v1_0/design.mdx
+meta: {
+  "title": "Design principles",
+  "description": "Understanding the design principles behind AgentBridge"
+}
+        
+## AI-First
+
+AgentBridge is designed with a goal of making AI agents more capable of understanding and completing tasks autonomously. It takes a unique and tailored approach - unlike traditional API specifications that focus on isolated endpoints, AgentBridge organizes APIs into actions, flows (multi-step workflows), and entities, enriched with clear, semantic descriptions.
+
+This specific structure, provides an optimized way for LLMs to consume and perform up to expectations of the user accurately.
+
+## Flow-Oriented
+
+Workflows are fundamental blocks in many systems, so providing a structured approach to handling complex, multi-step tasks is crucial for AI agents.
+
+AgentBridge defines a standard format for describing workflows, making it simple for AI agents to understand and execute them.
+
+## Semantic Understanding
+
+AgentBridge excels at capturing the purpose of API operations, which helps AI agents in understanding the context and intent behind the requests.
+
+It promotes meaningful descriptions in API documentation, giving meaning to actions and entities, and conveying the relationships between steps in workflows.
+
+
+file: ./content/docs/next-enterprise/deployments/amazon-web-services.mdx
+meta: {
+  "title": "Amazon Web Services",
+  "description": "Learn about deployments of the next-enterprise boilerplate applications directly to the AWS Cloud",
+  "icon": "Fa6BrandsAws"
+}
+        
+import {Accordions, Accordion} from "fumadocs-ui/components/accordion"
+import {Step, Steps} from "fumadocs-ui/components/steps"
+import {Video} from "../../../../app/_components/video.tsx"
+
+## AWS provider features overview
+
+* Automated provisioning of AWS infrastructure
+* Scalable & secure setup using:
+  * VPC
+  * Elastic Container Service (ECS)
+  * Elastic Container Registry (ECR)
+  * Application Load Balancer
+  * S3 + CloudFront for static assets
+  * AWS WAF (Web Application Firewall)
+  * Redis Cluster for caching
+* CI/CD (GitHub Actions) ready
+  * Deploying the `next-enterprise` application
+  * Deploying the Storybook
+  * Destroying the stack
+
+## Getting started
+
+<Accordions type="single" defaultValue="automated">
+  <Accordion id="automated" title="Automated installation (recommended)">
+    <Steps>
+      <Step>
+        ### Pre-installation checks
+
+        Make sure you have the `enterprise-cli` installed. [Read more here](/next-enterprise/deployments/enterprise-cli)
+      </Step>
+
+      <Step>
+        ### Pre-run environment checks
+
+        Ensure your current working directory is an actual `next-enterprise` boilerplate, alternatively, read more about `next-enterprise` installation process [here](/next-enterprise#installation)
+      </Step>
+
+      <Step>
+        ### GitHub Auth
+
+        Confirm that you're correctly authenticated with [GitHub CLI](https://cli.github.com/). You can quickly check this by running:
+
+        ```bash
+        gh auth status
+        ```
+
+        If you're not authenticated, you'll be prompted to do so by running:
+
+        ```bash
+        gh auth login
+        ```
+
+        and following the instructions.
+      </Step>
+
+      <Step>
+        ### Prepare the AWS Iac & CI/CD
+
+        ```bash
+        enterprise prepare aws
+        ```
+      </Step>
+
+      <Step>
+        ### Continue interaction with the CLI
+
+        Follow the instructions displayed in the terminal!. The result of successful `prepare` command should be freshly set up `next-enterprise`-based repository with all the CI/CD configuration and IaC (Terraform)
+
+        <Video src="/enterprise-cli-prepare-aws.mp4" aspectRatio="auto" className="max-w-[350px]" autoPlay loop muted controls={false} />
+      </Step>
+
+      <Step>
+        ### Actual deployment
+
+        Newly created GitHub repository -> Actions -> select one of the workflows *(e.g. Deploy Stack)* -> Run Workflow
+
+        <Video src="/enterprise-cli-after-install-deploy.mp4" aspectRatio="auto" className="max-w-[500px]" autoPlay loop muted controls={false} />
+      </Step>
+    </Steps>
+  </Accordion>
+</Accordions>
+
+## Going forward - production environment
+
+The `enterprise-cli` installs a pre-configured **development environment**. To create a **production environment**, follow these steps:
+
+1. **Duplicate the Terraform Configuration**
+   * Copy the contents of the `terraform/dev` folder.
+   * Rename the new folder to `terraform/prod`.
+
+2. **Update Configuration References**
+   * Replace all occurrences of `dev` with `prod`.
+   * Replace all occurrences of `development` with `production`.
+
+3. **Create the Production Environment in GitHub**
+   * Go to your repository:\
+     **Settings > Environments > New Environment**
+   * Name it `production`.
+
+4. **Add Production Secrets**
+   Under **Settings > Secrets and variables > Actions**, and select the `production` environment, add the following secrets for the **production AWS tenant**:
+
+   * `AWS_ACCESS_KEY_ID`
+   * `AWS_SECRET_ACCESS_KEY`
+
+5. **Add Production Environment Variables**
+
+   Add the following environment variables to the `production` environment:
+
+   ```bash
+   REDIS_URL=redis://next-enterprise-iac-prod-redis-cluster.example.amazonaws.com:6379
+   S3_STORYBOOK_BUCKET_NAME=next-enterprise-iac-storybook-prod
+   ```
+
+6. **Duplicate CI/CD Pipelines**
+   * Copy the GitHub Actions workflows related to infrastructure and Storybook deployment.
+   * Update:
+     * Workflow names and environment references to production
+     * Any file paths or settings that reference `dev` or `development`
+
+This ensures the production environment is isolated and configured consistently with your development setup.
+
+## Visualization of the infrastructure
+
+<Mermaid
+  chart="
+graph TD;
+subgraph vpc [VPC]
+direction LR;
+gateway[(Internet Gateway)];
+s3_website[(S3 Static Website)];
+s3_bucket[(S3 Bucket)];
+waf{{WAF}};
+lb[(Load Balancer)];
+ecr[(ECR Registry)];
+ecs_cluster[(ECS Cluster)];
+task1[(Task 1)];
+task2[(Task 2)];
+redis[(Redis Cache)];
+end
+user1((User));
+user2((User));
+user1-->|Storybook Request|gateway;
+user2-->|Application Request|gateway;
+gateway-->|Storybook Request|s3_website;
+gateway-->|Application Request|waf;
+s3_website-->s3_bucket;
+waf-->lb;
+lb-->ecs_cluster;
+ecr-->ecs_cluster;
+ecs_cluster-->task1;
+ecs_cluster-->task2;
+task1-->redis;
+task2-->redis;
+classDef user fill:none,stroke:#2196F3,stroke-width:2px;
+classDef gateway fill:none,stroke:#FF9800,stroke-width:2px;
+classDef s3 fill:none,stroke:#4CAF50,stroke-width:2px;
+classDef waf fill:none,stroke:#F44336,stroke-width:2px;
+classDef lb fill:none,stroke:#FF9800,stroke-width:2px;
+classDef ecr fill:none,stroke:#FF9800,stroke-width:2px;
+classDef ecs fill:none,stroke:#FF5722,stroke-width:2px;
+classDef task fill:none,stroke:#03A9F4,stroke-width:2px;
+classDef redis fill:none,stroke:#F44336,stroke-width:2px;
+classDef vpc fill:none,stroke:#2196F3,stroke-width:2px,stroke-dasharray:5 5;
+class user1,user2 user;
+class gateway gateway;
+class s3_website,s3_bucket s3;
+class waf waf;
+class lb lb;
+class ecr ecr;
+class ecs_cluster ecs;
+class task1,task2 task;
+class redis redis;
+class vpc vpc;"
+/>
+
+
+file: ./content/docs/next-enterprise/deployments/enterprise-cli.mdx
+meta: {
+  "title": "Enterprise CLI",
+  "description": "Learn more about the Enterprise CLI, an state-of-the art Next.js deployments assistant for various cloud providers",
+  "icon": "SquareTerminal"
+}
+        
+import { Card, Cards } from "fumadocs-ui/components/card";
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { Accordions, Accordion } from "fumadocs-ui/components/accordion";
+import { Fa6BrandsAws } from "../../../../app/_components/icons/fa6-brands-aws.tsx";
+
+import { Video } from "../../../../app/_components/video.tsx";
+
+## Introduction
+
+Enterprise CLI is a fully open source command-line tool created in Golang with goal to simplify setting up and deploying infrastructure across cloud providers by automating the processes that would require cumbersome manual work.
+
+<Video src="/enterprise-cli-prepare-aws.mp4" aspectRatio="auto" className="max-w-[500px]" autoPlay loop muted controls={false} />
+
+## Installation
+
+With security and transparency in mind the CLI compiles locally on your machine rather than using pre-built binaries from registries
+
+<Steps>
+  <Step>
+    ### Execute the installation script
+
+    Paste this in your terminal
+
+    ```bash
+    curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/Blazity/enterprise-cli/main/install.sh | sh
+    ```
+  </Step>
+
+  <Step>
+    ### Check if the CLI is working
+
+    ```bash
+    enterprise --help
+    ```
+
+    This should show following output:
+
+    ```
+    Enterprise CLI for infrastructure management
+
+    Available Commands:
+      completion  Generate the autocompletion script for the specified shell
+      help        Help about any command
+      prepare     Prepare infrastructure for enterprise deployment
+
+    Use "enterprise [command] --help" for more information about a command.
+    ```
+  </Step>
+
+  <Step>
+    ### Next steps
+
+    Continue reading about available providers and how to get started with each one.
+  </Step>
+</Steps>
+
+## Supported Providers
+
+<Cards>
+  <Card icon={<Fa6BrandsAws className="size-8!"/>} href="/next-enterprise/deployments/amazon-web-services/" title="Amazon Web Services">
+    Learn what the AWS provider offers; VPC, ECS, ECR, Application Load Balancer, S3 + CloudFront for static assets, WAF, Redis Cluster for caching and more...
+  </Card>
+</Cards>
+
+### How does it work?
+
+The Enterprise CLI provides automation for processes that can be performed manually. Let's assume you are using the `aws` provider, the CLI executes the following sequence of operations:
+
+1. **Repository Initialization**
+   * Clones the `blazity/next-enterprise-terraform` repository into the system's temporary directory
+
+2. **Configuration Collection**
+   * Presents an interactive terminal interface prompting for:
+     * AWS Bucket name (for terraform state)
+     * AWS Project name
+     * AWS Region (deployment target)
+     * Repository name (for the new repository)
+     * Repository owner (user/organization under which the repository will be created)
+     * Visibility settings (public or private repository)
+
+3. **Branch Creation**
+   * Generates a new branch named `enterprise-aws-setup-${timestamp}` using the UNIX Epoch Timestamp
+
+4. **File Transfer**
+   * Copies essential files from the temporary clone to the current directory (local copy of `blazity/next-enterprise`):
+     * `terraform/` directory
+     * `.github/workflows` (CI/CD configurations)
+     * `docker-compose.yml`
+     * `Dockerfile`
+     * `.npmrc`
+
+5. **Code Modifications**
+   * Applies various codemods including:
+     * `jscodeshift` for modifying `next.config.ts` with additional properties (custom cache handler)
+     * `hcl` for updating Terraform configuration with form-provided inputs
+
+6. **GitHub Repository Creation**
+   * Creates a new repository via GitHub API under the selected account/organization
+
+7. **Remote Configuration**
+   * Links the local repository with the remote GitHub repository
+
+8. **AWS Configuration**
+   * Displays interactive terminal interface requesting AWS-specific variables (including access keys)
+
+9. **Secret Management**
+   * Sets repository secrets through GitHub API based on form information
+
+10. **Variable Configuration**
+    * Sets repository variables via GitHub API (including universal `REDIS_URL` and others for CI/CD)
+
+11. **Actions Enablement**
+    * Enables actions/workflows through GitHub API for the newly created repository
+      *NOTE: This may take up to couple minutes to activate after the programatic repository creation*
+
+12. **Remote Synchronization**
+    * Pushes all changes to the remote repository
+
+13. **Branch Reconciliation**
+    * Performs synchronization (artificial merge) between the new remotely tracked `main` branch and local `main`
+    * Deletes obsolete `enterprise-setup-${timestamp}` branches
+
+
+file: ./content/docs/next-enterprise/development/bundle-analyzer.mdx
+meta: {
+  "title": "Bundle Analyzer",
+  "description": "Overview of the bundle analyzer",
+  "icon": "Blocks"
+}
+        
+`next-enterprise` integrates the `@next/bundle-analyzer` package to provide manual bundle size analysis for the project.
+
+### Files related to this page
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+<Files>
+  <File name="package.json" />
+</Files>
+
+## Getting started
+
+To run the bundle analyzer, you can use the `analyze` script, which will start the analyzer in the interactive mode.
+
+```bash
+pnpm run analyze
+```
+
+This will run the production-mode build and start the analyzer as a local web pages where you can see the bundle size of the project accross various environments (Client, Server, Edge).
+
+Read more about the bundle analyzer in the [Next.js documentation](https://nextjs.org/docs/app/guides/package-bundling).
+
+
+file: ./content/docs/next-enterprise/development/env-vars.mdx
+meta: {
+  "title": "Environment Variables",
+  "icon": "Container"
+}
+        
+[T3 Env](https://env.t3.gg/) is a library that provides environmental variables checking at build time, type validation and transforming. It ensures that your application is using the correct environment variables and their values are of the expected type. You’ll never again struggle with runtime errors caused by incorrect environment variable usage.
+
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="env.mjs" />
+</Files>
+
+Config file is located at `env.mjs`. Simply set your client and server variables and import `env` from any file in your project.
+
+```ts
+export const env = createEnv({
+  server: {
+    // Server variables
+    SECRET_KEY: z.string(),
+  },
+  client: {
+    // Client variables
+    API_URL: z.string().url(),
+  },
+  runtimeEnv: {
+    // Assign runtime variables
+    SECRET_KEY: process.env.SECRET_KEY,
+    API_URL: process.env.NEXT_PUBLIC_API_URL,
+  },
+})
+```
+
+If the required environment variables are not set, you'll get an error message:
+
+```sh
+  ❌ Invalid environment variables: { SECRET_KEY: [ 'Required' ] }
+```
+
+
+file: ./content/docs/next-enterprise/development/github-actions.mdx
+meta: {
+  "title": "GitHub Actions",
+  "description": "Overview of the GitHub Actions used in the project",
+  "icon": "Github"
+}
+        
+`next-enterprise` delivers robust CI/CD configuration out of the box, improving development efficiency and product quality through:
+
+* Automated bundle size monitoring for pull requests
+* Comprehensive code quality and build validation
+* End-to-end testing with Playwright
+* Flexible deployment options
+
+### Files related to this page
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+<Files>
+  <Folder defaultOpen name=".github">
+    <Folder defaultOpen name="workflows">
+      <File name="nextjs_bundle_analysis.yml" />
+
+      <File name="playwright.yml" />
+
+      <File name="check.yml" />
+    </Folder>
+  </Folder>
+
+  <File name="report-bundle-size.js" />
+</Files>
+
+### Bundle size monitoring
+
+Bundle size directly impacts application performance, user experience, and hosting costs. Smaller bundles mean faster loading times, reduced bandwidth consumption, and improved customer satisfaction.
+
+For each pull request, our system calculates bundle size using the `report-bundle-size.js` script, with results appearing in the GitHub Action workflow `nextjs_bundle_analysis.yml`. This helps teams maintain optimal performance without manual oversight.
+
+![Bundle size checking](public/github-actions-bundle-size-check.png)
+
+### Quality assurance
+
+Early issue detection significantly reduces development costs and prevents problems from reaching production environments.
+
+The `check.yml` workflow automatically validates linting, formatting, and executes smoke and acceptance tests for every code contribution, ensuring consistent code quality across your enterprise application.
+
+### Automated testing
+
+End-to-end tests verify that business-critical user journeys function correctly, protecting revenue streams and customer experience.
+
+Our integrated Playwright testing runs automatically with each code change, providing confidence that updates won't disrupt essential business operations.
+
+### Enterprise-ready deployments
+
+`next-enterprise` supports both simple and sophisticated deployment needs, giving organizations deployment flexibility without sacrificing reliability.
+
+Beyond one-click Vercel deployments, we provide production-ready AWS cloud infrastructure through Terraform, accessible via our [Enterprise CLI](/next-enterprise/deployments/enterprise-cli).
+
+
+file: ./content/docs/next-enterprise/development/linter-and-formatter.mdx
+meta: {
+  "title": "Linter and Formatter",
+  "icon": "Drill"
+}
+        
+`next-enterprise` integrates ESLint and Prettier as foundational code quality tools that enforce consistency, prevent errors, and streamline collaboration.
+
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="prettier.config.js" />
+
+  <File name=".prettierignore" />
+
+  <File name="eslint.config.mjs" />
+</Files>
+
+## Why Code Quality Tools Matter
+
+In projects with multiple contributors, code inconsistency silently undermines productivity and reliability:
+
+* Code reviews get sidetracked by discussions about style rather than substance
+* Bugs hide within inconsistent patterns and unsafe practices
+* New developers struggle to learn project-specific conventions
+* Technical debt accumulates as shortcuts become normalized
+
+ESLint and Prettier establish a single source of truth for code quality, enforced automatically throughout the development workflow.
+
+## ESLint: Modern Flat Configuration
+
+Next Enterprise implements ESLint's performant flat configuration format (ESLint v9), delivering comprehensive static analysis with minimal overhead.
+
+### Key Features in Practice
+
+**TypeScript Integration** - Our configuration extends the TypeScript compiler's capabilities, catching problematic patterns that pass compilation but lead to runtime errors. It flags issues like unchecked indexed access that might cause "undefined" errors in production.
+
+**Import Organization** - The setup automatically organizes imports by external/internal grouping and alphabetizes them, creating consistent file headers:
+
+```javascript
+// External imports sorted alphabetically
+import { Button } from '@/components/ui/button'
+import { useState } from 'react'
+
+// Internal imports grouped and sorted
+import { api } from '@/lib/api'
+import { formatDate } from '@/lib/utils'
+```
+
+**Next.js Optimizations** - The configuration enforces recommended Next.js patterns through `@next/eslint-plugin-next`, preventing issues like missing image optimizations or incorrect link attributes.
+
+**Intelligent Exclusions** - Build artifacts, generated types, and dependencies are automatically excluded from linting, optimizing CI/CD pipelines without sacrificing thoroughness.
+
+## Prettier: Eliminating Style Debates
+
+Prettier removes subjective code style decisions from the development process, enabling teams to focus on problem-solving rather than formatting preferences.
+
+### Practical Configuration
+
+The Prettier setup prioritizes modern readability standards:
+
+* **Tailwind Class Sorting** - Classes are automatically organized according to Tailwind's recommended priority, preventing duplicate declarations
+* **Modern Syntax Preferences** - Settings like `semi: false` and optimized line lengths reflect contemporary JavaScript practices
+* **Git-Optimized Formatting** - Options like `trailingComma: "es5"` produce cleaner diffs when reviewing code changes
+
+## Integration into Development Workflow
+
+These tools seamlessly integrate through:
+
+* **Editor Integration** - VSCode and other IDEs provide real-time linting and formatting feedback as you type
+* **Pre-commit Hooks** - Changes are automatically checked before commits
+* **CI/CD Validation** - Pull requests are validated against the same standards
+
+By automating code quality enforcement, Next Enterprise eliminates potential bugs and inconsistencies before they enter the codebase, allowing teams to build robust applications with confidence in long-term maintainability.
+
+
+file: ./content/docs/next-enterprise/development/observability.mdx
+meta: {
+  "title": "Observability",
+  "description": "Overview of the observability integration available in the next-enterprise project",
+  "icon": "Eye"
+}
+        
+`next-enterprise` includes built-in observability powered by [OpenTelemetry](https://opentelemetry.io/) and integrated through Vercel's official package, giving you insights into your application's performance without complex configuration.
+
+## Files related to this page
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+<Files>
+  <File name="next.config.mjs" />
+
+  <File name="instrumentation.ts" />
+</Files>
+
+## What is Observability?
+
+Observability helps you understand your system's internal state through its external outputs. For web applications, this includes:
+
+* Performance metrics (load times, API responses)
+* Error tracking across frontend and backend
+* User journey analysis
+* Overall system health monitoring
+
+## Key Benefits
+
+Effective observability provides several practical advantages:
+
+* **Proactive problem solving** - Identify issues before users report them
+* **Improved efficiency** - Debug with context, reducing resolution time
+* **Data-driven decisions** - Use real metrics to guide UX and performance improvements
+* **Resource optimization** - Allocate resources based on actual usage patterns
+* **Team alignment** - Create shared understanding of system behavior across departments
+
+## Implementation Details
+
+`next-enterprise` uses Vercel's OpenTelemetry integration, configured through the `instrumentation.ts` file:
+
+```ts
+import { registerOTel } from "@vercel/otel";
+
+export function register() {
+  registerOTel("next-app");
+}
+```
+
+This provides automatic instrumentation of web vitals, page loads, and server-side traces, with integration into Vercel's dashboard and compatibility with other observability platforms.
+
+## Getting Started
+
+The observability features work automatically when deployed to Vercel. During local development:
+
+1. Performance data appears in browser developer tools
+2. Server-side traces show in terminal logs
+3. Additional exporters can be configured for advanced usage
+
+## Best Practices
+
+To maximize value from observability:
+
+* Add custom traces for critical operations
+* Set up alerts for key performance thresholds
+* Regularly review metrics during development
+* Use insights to guide targeted optimizations
+
+
+file: ./content/docs/next-enterprise/development/package-manager.mdx
+meta: {
+  "title": "Package Manager",
+  "description": "Overview of the package manager used in the project",
+  "icon": "Package"
+}
+        
+This project utilizes **[pnpm]** as its package manager, managed via **[Corepack]**. This combination is chosen to enhance the development experience and ensure project stability, particularly for enterprise-scale applications.
+
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="package.json" />
+
+  <File name="pnpm-lock.yaml" />
+</Files>
+
+### Why this particular package manager?
+
+[`pnpm`][pnpm] offers significant advantages over traditional package managers like [`npm`][npm] or [`yarn`][yarn]:
+
+* **Faster Performance:** `pnpm` installs dependencies much faster, reducing setup time and speeding up CI/CD pipelines.
+* **Resource Efficiency:** It saves considerable disk space by sharing dependencies across projects instead of duplicating them.
+* **Increased Reliability:** `pnpm`'s strict approach prevents common issues like "phantom dependencies," leading to more predictable and stable builds.
+
+### Why corepack?
+
+**[Corepack][Corepack]** is a tool included with modern Node.js versions that standardizes package manager usage across a team and different environments:
+
+* **Guaranteed Consistency:** It ensures every developer and deployment environment uses the exact same `pnpm` version specified in the project's `package.json`, eliminating "works on my machine" problems related to package manager differences.
+* **Simplified Setup:** Developers don't need to manually install or manage `pnpm` globally; Corepack handles it automatically based on the project configuration.
+
+Together,  [`pnpm`][pnpm] and [`Corepack`][Corepack] provide a streamlined, efficient, and consistent development workflow, crucial for maintaining productivity and stability in enterprise projects.
+
+[pnpm]: https://pnpm.io/
+
+[Corepack]: https://nodejs.org/api/corepack.html
+
+[npm]: https://www.npmjs.com/
+
+[yarn]: https://yarnpkg.com/
+
+
+file: ./content/docs/next-enterprise/development/scripts.mdx
+meta: {
+  "title": "Predefined scripts",
+  "description": "Overview of the scripts available in the package.json file",
+  "icon": "Scroll"
+}
+        
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="package.json" />
+</Files>
+
+| Script            | Description                                                        |
+| ----------------- | ------------------------------------------------------------------ |
+| `prettier:fix`    | Automatically fixes formatting issues                              |
+| `analyze`         | Analyzes the bundle sizes for Client, Server and Edge environments |
+| `storybook`       | Starts the Storybook server                                        |
+| `build-storybook` | Builds the Storybook for deployment                                |
+| `test`            | Runs unit and integration tests                                    |
+| `e2e:headless`    | Runs end-to-end tests in headless mode                             |
+| `e2e:ui`          | Runs end-to-end tests with UI                                      |
+| `format`          | Formats the code with Prettier                                     |
+| `postinstall`     | Applies patches to external dependencies                           |
+| `coupling-graph`  | Generates a coupling and cohesion graph for the components         |
+
+
+file: ./content/docs/next-enterprise/development/security.mdx
+meta: {
+  "title": "Security",
+  "icon": "Shield"
+}
+        
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="renovate.json" />
+</Files>
+
+## How do we ensure security and manage vulnerabilities?
+
+Security is a core priority in this boilerplate. Our security approach includes:
+
+* Careful library selection based on proven reliability and active maintenance
+* Exclusion of experimental technologies without verified stability
+* Removal of deprecated features and unmaintained dependencies
+
+We implement [Renovate][renovate] bot for automated dependency updates to ensure all components remain secure and current.
+
+[renovate]: https://github.com/renovatebot/renovate
+
+
+file: ./content/docs/next-enterprise/development/styles.mdx
+meta: {
+  "title": "Styling & CSS",
+  "description": "Managing visual styles in next-enterprise",
+  "icon": "Palette"
+}
+        
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+
+## How is styling implemented in the boilerplate?
+
+`next-enterprise` uses TailwindCSS v4 as its primary styling solution. It significantly accelerates development by allowing developers to use utility classes for common styles without writing custom CSS and jumping between loads of files or creating hundreds of wrapper components like in other CSS-in-JS libraries.
+
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <Folder defaultOpen name="styles">
+    <File name="tailwind.css" />
+  </Folder>
+
+  <File name="tailwind.config.js" />
+
+  <File name="postcss.config.js" />
+</Files>
+
+This comes with various business benefits:
+
+* Significantly reduced styling development time, facilitating efficient prototyping and iteration cycles.
+* Minimized codebase footprint, resulting in lower long-term maintenance requirements.
+* Enables development teams to focus on core functionality and customer value delivery without requiring extensive styling expertise.
+
+## Style and component variants
+
+`next-enterprise` uses the [CVA][cva] *(Class Variance Authority)* library to create component variants.
+
+<Accordions>
+  <Accordion title={<p>More about <b>CVA</b> <i>(Class Variance Authority)</i></p>}>
+    Class Variance Authority (CVA) is actually nothing more than just string concatenation library with excellent types and DX. It is a type-safe way to create component variants that is very well fitted with Tailwind CSS.
+  </Accordion>
+</Accordions>
+
+Other CSS-in-TS libraries like [Stitches][stitches] and [Vanilla Extract][vanilla-extract] offer type-safe UI components, but they aren't suitable for all projects. You might need more stylesheet control, want to use Tailwind CSS, or prefer writing custom CSS.
+
+Traditional CSS variant creation is time-consuming, as it requires manual class-to-prop mapping and type definitions. [CVA][cva] solves this problem by providing a type-safe method for creating component variants. This allows you to build effective design systems while maintaining the flexibility of CSS and focusing on core UI development.
+
+[stitches]: https://stitches.dev/
+
+[cva]: https://cva.style/
+
+[vanilla-extract]: https://vanilla-extract.style/
+
+
+file: ./content/docs/next-enterprise/development/testing.mdx
+meta: {
+  "title": "Automated testing",
+  "description": "Overview of the testing tools available in the project",
+  "icon": "TestTubeDiagonal"
+}
+        
+This boilerplate comes with various testing setups to ensure your application's reliability and robustness.
+
+### Files related to this page
+
+import { File, Files, Folder } from "fumadocs-ui/components/files";
+
+<Files>
+  <Folder defaultOpen name=".storybook">
+    <File name="main.ts" />
+
+    <File name="preview.ts" />
+  </Folder>
+
+  <Folder defaultOpen name=".github">
+    <Folder defaultOpen name="workflows">
+      <File name="playwright.yml" />
+    </Folder>
+  </Folder>
+
+  <Folder defaultOpen name="components">
+    <Folder defaultOpen name="Button">
+      <File name="Button.stories.tsx" />
+    </Folder>
+  </Folder>
+
+  <File name="jest.config.js" />
+
+  <File name="jest.setup.js" />
+
+  <Folder defaultOpen name="e2e">
+    <File name="example.spec.ts" />
+  </Folder>
+
+  <File name="playwright.config.ts" />
+</Files>
+
+## Unit & Integration Testing
+
+[Jest][jest] is a popular and battle-tested library created by Meta used for unit and integration testing by millions of developers.
+
+Run `pnpm run test` to run the tests.
+
+Refer to the [Predefined Scripts](/docs/next-enterprise/development/scripts) file for more information on the available scripts.
+
+## End-to-End Testing
+
+[Playwright][playwright] is used for end-to-end testing.
+
+* Run `pnpm run e2e:headless` to run the tests in headless mode.
+* Run `pnpm run e2e:ui` to run the tests in UI mode.
+
+Refer to the [Predefined Scripts](/docs/next-enterprise/development/scripts) file for more information on the available scripts.
+
+## Acceptance Testing
+
+To write acceptance tests, we leverage Storybook's play function. This allows you to interact with your components and test various user flows within Storybook.
+
+```tsx
+/*
+ * See https://storybook.js.org/docs/react/writing-stories/play-function#working-with-the-canvas
+ * to learn more about using the canvasElement to query the DOM
+ */
+export const FilledForm: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const emailInput = canvas.getByLabelText("email", {
+      selector: "input",
+    });
+
+    await userEvent.type(emailInput, "example-email@email.com", {
+      delay: 100,
+    });
+
+    const passwordInput = canvas.getByLabelText("password", {
+      selector: "input",
+    });
+
+    await userEvent.type(passwordInput, "ExamplePassword", {
+      delay: 100,
+    });
+    // See https://storybook.js.org/docs/react/essentials/actions#automatically-matching-args to learn how to setup logging in the Actions panel
+    const submitButton = canvas.getByRole("button");
+
+    await userEvent.click(submitButton);
+  },
+};
+```
+
+## Smoke Testing
+
+In this boilerplate, we use Storybook's out-of-the-box support for smoke testing to verify that components render correctly without any errors. Just run pnpm run test-storybook to perform smoke testing. Remember to write stories in JSX or TSX format only. Smoke testing and a lot of other functionalities dont work well with MDX stories.
+
+[jest]: https://jestjs.io/
+
+[playwright]: https://playwright.dev/
+
+
+file: ./content/docs/next-enterprise/development/typescript.mdx
+meta: {
+  "title": "Strict TypeScript",
+  "icon": "Code"
+}
+        
+`next-enterprise` enforces rigorous TypeScript configurations to maximize code quality and reliability in production environments. The carefully selected compiler options work together to create a robust development experience with tangible business outcomes.
+
+### Files related to this page
+
+import {File, Files, Folder} from "fumadocs-ui/components/files"
+
+<Files>
+  <File name="tsconfig.json" />
+
+  <File name="reset.d.ts" />
+
+  <File name="next-env.d.ts" />
+</Files>
+
+## Why Strictness Matters in Enterprise Development
+
+For enterprise teams and fast-moving teams, code reliability translates directly to business success. Strict TypeScript provides several competitive advantages:
+
+1. **`strict: true`** enables comprehensive type checking across your codebase. This shifts error detection from runtime to compile time, dramatically reducing production incidents. Enterprise applications benefit from improved reliability, lower maintenance costs, and better developer collaboration. The codebase becomes self-documenting and explicitly typed, accelerating onboarding for new team members and reducing knowledge silos.
+
+2. **`noUncheckedIndexedAccess: true`** prevents a common class of runtime errors by requiring explicit null checks when accessing array elements or object properties. This eliminates unexpected crashes from accessing undefined values, particularly valuable in complex enterprise applications where data structures may contain optional fields or empty collections.
+
+3. **`forceConsistentCasingInFileNames: true`** ensures consistent file naming conventions across development environments. This prevents subtle build failures that occur when different operating systems handle filename casing differently, a critical feature for teams working across Windows, macOS, and Linux platforms.
+
+## The Problem with `any`
+
+Using the `any` type effectively bypasses TypeScript's type system entirely, undermining its core value proposition:
+
+* It creates maintenance liabilities as codebases grow
+* It prevents accurate refactoring and IDE assistance
+* It silently propagates errors throughout your application
+* It makes code migration and upgrades substantially riskier
+* It introduces security vulnerabilities by allowing unexpected data shapes
+
+In enterprise settings, these risks compound with scale. What begins as small conveniences become significant technical debt that slows development velocity and increases failure rates over time.
+
+## Enhanced Type Safety with ts-reset
+
+We use [ts-reset](https://www.totaltypescript.com/ts-reset), a utility library by Matt Pocock that improves TypeScript's built-in type definitions. This library addresses several typing inconsistencies by:
+
+* Converting `any` results from `JSON.parse` and `fetch().json()` to `unknown`, forcing safer type handling
+* Fixing `.filter(Boolean)` behavior to correctly remove falsy values with proper typing
+* Making array operations more reliable with improved type definitions
+* Enhancing DOM APIs with safer types for `localStorage` and `sessionStorage`
+
+These strict TypeScript configurations combined with utilities like ts-reset function as an automated quality assurance layer integrated directly into your development process. The result is accelerated development velocity, higher code reliability, and substantial reduction in production bugs.
+
+
+file: ./content/docs/next-enterprise/guidelines/state-management.mdx
+meta: {
+  "title": "State Management",
+  "icon": "Cable"
+}
+        
+## State Management
+
+While this boilerplate doesn't include a specific state management library, we believe it's essential for you to choose the one that best suits your project's needs. Here are some libraries we recommend for state management:
+
+### Zustand
+
+[Zustand](https://github.com/pmndrs/zustand) is a small, fast, and scalable state management library. It's designed to be simple and intuitive, making it a great choice for small to medium-sized projects. It's also optimized for bundle size, ensuring minimal impact on your app's performance.
+
+### Jotai
+
+[Jotai](https://github.com/pmndrs/jotai) is an atom-based state management library for React that focuses on providing a minimal and straightforward API. Its atom-based approach allows you to manage your state in a granular way while still being highly optimized for bundle size.
+
+### Recoil
+
+[Recoil](https://recoiljs.org/) is a state management library developed by Facebook, specifically designed for React applications. By utilizing atoms and selectors, Recoil allows you to efficiently manage state and derived state. Its key benefit is the ability to update components only when the state they're subscribed to changes, reducing unnecessary re-renders and keeping your application fast and efficient. Recoil also offers great developer experience with built-in debugging tools.
+
+Choose the library that best fits your requirements and project structure to ensure an efficient state management solution for your application.

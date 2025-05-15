@@ -3,3 +3,21 @@ repos:
     rev: v2.6.3
     hooks:
       - id: conventional-commits
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        language: system
+        entry: pnpm lint:fix
+        types: [file]
+        files: \.(js|jsx|ts|tsx)$
+        pass_filenames: false
+
+      - id: prettier
+        name: Prettier
+        language: system
+        entry: pnpm format
+        types: [file]
+        files: \.(js|jsx|ts|tsx|json|css|scss|md)$
+        pass_filenames: false

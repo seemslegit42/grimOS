@@ -1,0 +1,38 @@
+{
+  "projectName": "grimOS",
+  "indexFile": "workspace_index.json",
+  "indexConfigs": {
+    "excludeDirs": [
+      ".git",
+      "node_modules",
+      "__pycache__",
+      ".turbo",
+      "build",
+      "dist",
+      ".next",
+      "coverage",
+      ".storybook-static"
+    ],
+    "excludeExtensions": [".pyc", ".pyo", ".o", ".obj", ".exe", ".bin", ".log", ".lock", ".swp", ".swo", ".DS_Store"],
+    "includeContent": false,
+    "trackChanges": true,
+    "maxFileSize": 1048576
+  },
+  "remoteSync": {
+    "enabled": false,
+    "remotePath": "",
+    "syncInterval": 3600,
+    "syncCommand": "",
+    "excludeFromSync": [".git", "node_modules", "__pycache__", ".turbo", "build", "dist", ".next", "coverage"]
+  },
+  "visualization": {
+    "enabled": true,
+    "generateGraph": true,
+    "graphOutputPath": "workspace_graph.html"
+  },
+  "services": {
+    "trackMicroservices": true,
+    "trackDependencies": true,
+    "trackAPIs": true
+  }
+}

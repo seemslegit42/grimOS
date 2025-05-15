@@ -1,0 +1,158 @@
+# Default values for grimoire-auth
+replicaCount: 1
+
+image:
+  repository: grimoire/auth
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8000
+
+ingress:
+  enabled: false
+  className: "traefik"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    # kubernetes.io/ingress.class: traefik
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: auth.grimoire.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: auth-tls
+  #    hosts:
+  #      - auth.grimoire.local
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Service configuration
+configMap:
+  enabled: true
+  data:
+    ENVIRONMENT: "{{ .Values.global.environment | default .Release.Namespace }}"
+    POSTGRES_SERVER: "{{ .Release.Name }}-postgres"
+    POSTGRES_DB: "auth_db"
+    POSTGRES_USER: "postgres"
+    BACKEND_CORS_ORIGINS: '["http://localhost:3000", "http://grimoire.local"]'
+    ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+    REFRESH_TOKEN_EXPIRE_DAYS: "7"
+
+secrets:
+  enabled: true
+  data:
+    POSTGRES_PASSWORD: "postgres"
+    SECRET_KEY: "supersecretkey"
+    SERVICE_SECRET_KEY: "servicesecretkey"
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Database configuration
+postgresql:
+  enabled: true
+  auth:
+    username: auth_user
+    password: auth_password
+    database: auth_db
+
+# Environment variables
+env:
+  # Database settings
+  POSTGRES_SERVER: {{ .Release.Name }}-postgresql
+  POSTGRES_USER: auth_user
+  POSTGRES_PASSWORD: auth_password
+  POSTGRES_DB: auth_db
+  # Security
+  SECRET_KEY: ""  # Should be overridden
+  SERVICE_SECRET_KEY: ""  # Should be overridden
+  ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+  REFRESH_TOKEN_EXPIRE_DAYS: "7"
+  # API settings
+  API_V1_STR: "/api/v1"
+  # Kafka settings
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Release.Name }}-kafka:9092
+  # Environment
+  ENVIRONMENT: production
+  # CORS
+  BACKEND_CORS_ORIGINS: '["http://localhost:3000","https://grimoire.local"]'
+
+# Redis for token management
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: true
+    password: ""  # Should be overridden
+
+# Additional environment variables as key-value pairs
+extraEnv: []
+
+# Configuration files and secrets mounted as volumes
+configMaps:
+  enabled: false
+  data: {}
+
+secrets:
+  enabled: true
+  data:
+    SECRET_KEY: ""  # Should be overridden
+    SERVICE_SECRET_KEY: ""  # Should be overridden

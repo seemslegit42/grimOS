@@ -1,0 +1,25 @@
+apiVersion: v2
+name: grimoire
+description: Helm chart for Grimoire OS microservices stack
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+# Dependencies for subcharts
+dependencies:
+  - name: grimoire-frontend
+    version: 0.1.0
+    repository: "file://../grimoire-frontend"
+    condition: frontend.enabled
+  - name: grimoire-backend
+    version: 0.1.0
+    repository: "file://../grimoire-backend"
+    condition: backend.enabled
+  - name: grimoire-auth
+    version: 0.1.0
+    repository: "file://../grimoire-auth"
+    condition: auth.enabled
+  - name: grimoire-api-gateway
+    version: 0.1.0
+    repository: "file://../grimoire-api-gateway"
+    condition: apiGateway.enabled
