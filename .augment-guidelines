@@ -1,0 +1,124 @@
+# 🧠 Grimoire™ Development Guidelines (User & Workspace)
+
+🛠️ Architecture & Implementation Preferences
+Monorepo Management: Use Turborepo to manage all microservices and frontends in a single repository.
+
+Architecture Pattern: Microservices-based with clear service boundaries (Auth, Normalization, UBA, TI, Cognitive Core, etc.).
+
+Backend Language: Prefer Python (3.11+) using FastAPI.
+
+Frontend Stack: Use React (with TypeScript), TailwindCSS for styling, and shadcn/ui components.
+
+Database: Use PostgreSQL via SQLAlchemy or Prisma depending on service language.
+
+Interservice Communication: Prefer Kafka for async event-based pipelines; fallback to gRPC for sync operations.
+
+Containerization: All services must run in Docker containers.
+
+Orchestration: Kubernetes with Helm charts for each microservice.
+
+🔍 AI & Automation
+AI Agents: Extendable via a marketplace model. Core agents should use OpenAI’s function calling format and conform to a strict JSON schema.
+
+Cognitive Core: All logic flows through a natural language interface, using semantic intent routing to dispatch actions to modules/microservices.
+
+LLM Integration: Default to OpenAI GPT-4.5 or Claude 3 Sonnet for production inference, fallback to local models for dev/testing.
+
+📦 Package & Dependency Guidelines
+Backend
+fastapi==0.110.0
+
+pydantic==2.x
+
+sqlalchemy==2.x
+
+kafka-python==2.0.2
+
+uvicorn[standard]
+
+httpx
+
+python-dotenv
+
+Frontend
+<react@18.x>
+
+<next@14.x> (if using Next.js for frontends)
+
+<tailwindcss@3.x>
+
+@shadcn/ui
+
+axios, zustand for state management
+
+🧪 Testing & CI/CD
+All services should include:
+
+pytest for Python tests
+
+jest and playwright for frontend testing
+
+Mandatory GitHub Actions workflows:
+
+Lint + Type Check
+
+Test Coverage
+
+Docker Build
+
+Critical pipelines include schema validation for normalized events and UBA/Threat Intel payloads.
+
+📐 Coding Style & Structure
+Use black for formatting Python code and ruff for linting.
+
+Use consistent folder structure for each service:
+
+pgsql
+Copy
+Edit
+/service-name
+  ├── app/
+  ├── tests/
+  ├── Dockerfile
+  ├── pyproject.toml or package.json
+Type hints are mandatory. Use pydantic models for data contracts between services.
+
+Write docstrings for all public functions, especially for any AI/ML-related logic.
+
+⚙️ Developer Experience & Shortcuts
+Default .env.example for each service.
+
+Autodiscover all mappers, enrichers, and plugins using decorators or metaclasses.
+
+Provide prebuilt Makefile targets for:
+
+make dev
+
+make test
+
+make build
+
+Frontend should include Storybook for component testing.
+
+🧠 Naming Conventions
+Use grimoire_core, grimoire_uba, grimoire_dashboard, etc. for packages/microservices.
+
+AI agents and workflows should be prefixed with aether_(e.g., aether_anomaly_detector, aether_sales_forecaster).
+
+Keep Kubernetes namespaces tied to module names (e.g., grimoire-uba, grimoire-tintel).
+
+🔐 Security Practices
+Use pydantic.BaseModel validation for all input/output.
+
+Encrypt all sensitive values in transit using TLS 1.3.
+
+Auth microservice to provide JWT tokens, managed by Auth0 or Clerk.dev.
+
+✅ Examples of Things to Flag
+Inconsistent typing or missing type hints.
+
+Undocumented data schemas.
+
+Services lacking test coverage or not auto-registering modules correctly.
+
+Any deviation from Docker/Kubernetes deployability.
