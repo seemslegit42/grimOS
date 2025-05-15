@@ -12,9 +12,13 @@ from app.models.user import RefreshToken, User
 from app.schemas.auth import UserCreate, UserUpdate
 
 
-def get_user_by_id(db: Session, user_id: str) -> Optional[User]:
+def get_user(db: Session, user_id: str) -> Optional[User]:
     """Get a user by ID."""
     return db.query(User).filter(User.id == user_id).first()
+
+def get_user_by_id(db: Session, user_id: str) -> Optional[User]:
+    """Get a user by ID (alias for get_user for backward compatibility)."""
+    return get_user(db, user_id)
 
 
 def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -121,12 +125,17 @@ def create_refresh_token(
     db: Session, 
     user_id: str, 
     token: str, 
-    expires_in_days: int = 7,
+    expires_at: Optional[datetime] = None,
+    expires_in_days: Optional[int] = None,
     user_agent: Optional[str] = None,
     ip_address: Optional[str] = None
 ) -> RefreshToken:
     """Create a new refresh token."""
-    expires_at = datetime.now(timezone.utc) + timedelta(days=expires_in_days)
+    if expires_at is None:
+        if expires_in_days is None:
+            expires_in_days = 7
+        expires_at = datetime.now(timezone.utc) + timedelta(days=expires_in_days)
+    
     db_token = RefreshToken(
         token=token,
         expires_at=expires_at,

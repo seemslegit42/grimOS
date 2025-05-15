@@ -1,20 +1,24 @@
 """gRPC server implementation for the Auth service."""
 import logging
 import time
+import uuid
 from concurrent import futures
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
 
 import grpc
+from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.security import create_access_token, verify_password
+from app.core.security import ALGORITHM, create_access_token, verify_password
 from app.crud.user import (
     authenticate_user,
     create_refresh_token,
     create_user,
+    delete_refresh_token,
     delete_user,
+    get_refresh_token,
     get_user,
     get_user_by_email,
     update_user,
@@ -93,14 +97,32 @@ class AuthServicer(auth_pb2_grpc.AuthServiceServicer):
         """Validate a token and return user information."""
         logger.info("Validating token")
         
-        # This is a simplified implementation
-        # In a real-world scenario, you would decode and verify the JWT token
-        # For now, we'll assume the token is valid if it starts with "valid_"
-        
-        if request.token.startswith("valid_"):
-            # Extract user_id from token (in a real implementation, you'd decode the JWT)
-            user_id = request.token.split("_")[1]
+        try:
+            # Decode and verify the JWT token
+            payload = jwt.decode(
+                request.token, 
+                settings.SECRET_KEY, 
+                algorithms=[ALGORITHM]
+            )
             
+            # Check token type
+            if payload.get("type") != "access":
+                logger.warning("Token is not an access token")
+                return auth_pb2.TokenValidationResponse(is_valid=False)
+            
+            # Check expiration
+            exp = payload.get("exp")
+            if exp is None or datetime.fromtimestamp(exp, tz=timezone.utc) < datetime.now(timezone.utc):
+                logger.warning("Token is expired")
+                return auth_pb2.TokenValidationResponse(is_valid=False)
+            
+            # Get user_id from token
+            user_id = payload.get("sub")
+            if not user_id:
+                logger.warning("Token has no subject (user_id)")
+                return auth_pb2.TokenValidationResponse(is_valid=False)
+            
+            # Get user from database
             db = self._get_db()
             user = get_user(db, user_id)
             
@@ -109,17 +131,21 @@ class AuthServicer(auth_pb2_grpc.AuthServiceServicer):
                 context.set_details("User not found")
                 return auth_pb2.TokenValidationResponse()
             
+            # Check if user is active
+            if not user.is_active:
+                logger.warning(f"User {user_id} is not active")
+                return auth_pb2.TokenValidationResponse(is_valid=False)
+            
             return auth_pb2.TokenValidationResponse(
                 is_valid=True,
                 user_id=str(user.id),
                 is_active=user.is_active,
                 is_superuser=user.is_superuser,
-                expires_at=int(time.time()) + 3600,  # 1 hour from now
+                expires_at=int(exp),
             )
-        else:
-            return auth_pb2.TokenValidationResponse(
-                is_valid=False,
-            )
+        except JWTError as e:
+            logger.warning(f"JWT validation error: {str(e)}")
+            return auth_pb2.TokenValidationResponse(is_valid=False)
 
     def RefreshToken(
         self, request: auth_pb2.RefreshTokenRequest, context: grpc.ServicerContext
@@ -127,25 +153,25 @@ class AuthServicer(auth_pb2_grpc.AuthServiceServicer):
         """Refresh an access token using a refresh token."""
         logger.info("Refreshing token")
         
-        # In a real implementation, you would validate the refresh token
-        # For this example, we'll assume it's valid if it starts with "refresh_"
+        db = self._get_db()
         
-        if not request.refresh_token.startswith("refresh_"):
+        # Get the refresh token from the database
+        db_token = get_refresh_token(db, request.refresh_token)
+        
+        if not db_token:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details("Invalid refresh token")
             return auth_pb2.AuthResponse()
         
-        # Extract user_id from token
-        parts = request.refresh_token.split("_")
-        if len(parts) < 3:
+        # Check if the token is expired
+        if db_token.expires_at < datetime.now(timezone.utc):
+            delete_refresh_token(db, request.refresh_token)
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
-            context.set_details("Invalid refresh token format")
+            context.set_details("Refresh token expired")
             return auth_pb2.AuthResponse()
         
-        user_id = parts[1]
-        
-        db = self._get_db()
-        user = get_user(db, user_id)
+        # Get the user
+        user = get_user(db, str(db_token.user_id))
         
         if not user:
             context.set_code(grpc.StatusCode.NOT_FOUND)
@@ -160,7 +186,8 @@ class AuthServicer(auth_pb2_grpc.AuthServiceServicer):
         )
         
         # Create new refresh token
-        new_refresh_token = f"refresh_{str(user.id)}_{int(time.time())}"
+        jti = str(uuid.uuid4())
+        new_refresh_token = f"refresh_{str(user.id)}_{jti}"
         
         # Store new refresh token in database
         create_refresh_token(
@@ -171,6 +198,9 @@ class AuthServicer(auth_pb2_grpc.AuthServiceServicer):
             user_agent="gRPC client",
             ip_address="internal",
         )
+        
+        # Delete old refresh token
+        delete_refresh_token(db, request.refresh_token)
         
         return auth_pb2.AuthResponse(
             access_token=access_token,

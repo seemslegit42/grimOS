@@ -93,6 +93,7 @@ class TokenResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
+    detail: Optional[str] = None
 
 
 # Service authentication schemas
@@ -105,8 +106,6 @@ class ServiceToken(BaseModel):
 class ServiceTokenRequest(BaseModel):
     service_name: str
     secret_key: str
-class Message(BaseModel):
-    detail: str
 
 
 # Password reset

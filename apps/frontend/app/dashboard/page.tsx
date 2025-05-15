@@ -12,7 +12,9 @@ import { GlassmorphicPanel } from '@/components/ui/GlassmorphicPanel';
 import { GlassmorphicSidebar } from '@/components/ui/GlassmorphicSidebar';
 import { GlassmorphicTable } from '@/components/ui/GlassmorphicTable';
 import { GlassmorphicTabs } from '@/components/ui/GlassmorphicTabs';
-import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 // Mock data for the dashboard
 const security_alerts = [
@@ -29,10 +31,20 @@ const active_workflows = [
 
 export default function DashboardPage() {
   const [active_tab, setActiveTab] = useState('overview');
+  const { isLoaded, isSignedIn, user } = useUser();
+  const router = useRouter();
+  
+  // Redirect if not signed in
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/sign-in');
+    }
+  }, [isLoaded, isSignedIn, router]);
   
   // Define sidebar items (normally these would use actual icons from lucide-react)
   const sidebar_items = [
     { id: 'dashboard', label: 'Dashboard', icon: <span>📊</span>, href: '/dashboard' },
+    { id: 'profile', label: 'Profile', icon: <span>👤</span>, href: '/profile' },
     { id: 'security', label: 'Security', icon: <span>🛡️</span>, href: '/security' },
     { id: 'operations', label: 'Operations', icon: <span>⚙️</span>, href: '/operations' },
     { id: 'cognitive', label: 'Cognitive', icon: <span>🧠</span>, href: '/cognitive' },

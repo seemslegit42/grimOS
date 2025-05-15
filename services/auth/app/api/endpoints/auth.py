@@ -101,34 +101,13 @@ async def login_for_access_token(
         token_type="bearer",
         user=user_data,
     )
-    
-    # Create refresh token
-    refresh_token_jwt = create_refresh_token_jwt(str(user.id))
-    
-    # Get client info for tracking
-    user_agent, ip_address = get_client_info(request)
-    
-    # Store refresh token in database
-    create_refresh_token(
-        db=db,
-        user_id=str(user.id),
-        token=refresh_token_jwt,
-        expires_in_days=settings.REFRESH_TOKEN_EXPIRE_DAYS,
-        user_agent=user_agent,
-        ip_address=ip_address,
-    )
-    
-    return Token(
-        access_token=access_token,
-        refresh_token=refresh_token_jwt,
-    )
 
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
     request: Request,
     db: SessionDep,
-    refresh_token: RefreshToken,
+    refresh_token: RefreshRequest,
 ) -> Token:
     """
     Refresh access token using a refresh token.
@@ -184,18 +163,18 @@ async def refresh_token(
     )
 
 
-@router.post("/logout", response_model=Message)
+@router.post("/logout", response_model=MessageResponse)
 async def logout(
     db: SessionDep,
-    refresh_token: RefreshToken,
-) -> Message:
+    refresh_token: RefreshRequest,
+) -> MessageResponse:
     """
     Logout by invalidating the refresh token.
     """
     # Delete the refresh token from the database
     delete_refresh_token(db, refresh_token.refresh_token)
     
-    return Message(detail="Successfully logged out")
+    return MessageResponse(message="Successfully logged out")
 
 
 @router.get("/me", response_model=UserRead)

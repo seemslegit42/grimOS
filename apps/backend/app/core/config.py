@@ -16,6 +16,12 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+psycopg://postgres:postgres@localhost:5432/grimos")
     
+    # Redis
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    
+    # Kafka
+    KAFKA_BOOTSTRAP_SERVERS: str = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+    
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days

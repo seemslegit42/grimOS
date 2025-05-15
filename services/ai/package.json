@@ -1,0 +1,27 @@
+{
+  "name": "ai-service",
+  "version": "1.0.0",
+  "description": "grimOS AI Service integrating OpenAI, Gemini, and Groq with Vercel AI SDK",
+  "main": "index.js",
+  "scripts": {
+    "dev": "uvicorn app.main:app --reload",
+    "start": "uvicorn app.main:app",
+    "test": "pytest",
+    "lint": "flake8 app",
+    "format": "black app",
+    "build": "docker build -t grimos-ai-service ."
+  },
+  "keywords": [
+    "ai",
+    "openai",
+    "gemini",
+    "groq",
+    "vercel-ai-sdk",
+    "fastapi"
+  ],
+  "author": "grimOS Team",
+  "license": "MIT",
+  "dependencies": {
+    "ai": "^2.2.31"
+  }
+}

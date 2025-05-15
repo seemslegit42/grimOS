@@ -91,7 +91,7 @@ def create_service_token(service_name: str, expires_delta: timedelta | None = No
     Create a JWT token for service-to-service authentication
     """
     if expires_delta is None:
-        expires_delta = timedelta(minutes=60)  # Default 1 hour
+        expires_delta = timedelta(hours=1)  # Default 1 hour
     
     expire = datetime.now(timezone.utc) + expires_delta
     
@@ -116,28 +116,3 @@ def verify_service_token(token: str) -> Dict[str, Any]:
         return payload
     except JWTError:
         raise ValueError("Invalid service token")
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password: str) -> str:
-    """
-    Hash a password
-    """
-    return pwd_context.hash(password)
-
-
-def create_service_token(service_name: str, expires_delta: timedelta | None = None) -> str:
-    """
-    Create a token for service-to-service communication
-    """
-    if expires_delta is None:
-        expires_delta = timedelta(days=1)  # Default 1 day for service tokens
-    
-    expire = datetime.now(timezone.utc) + expires_delta
-    to_encode = {
-        "exp": expire,
-        "service": service_name,
-        "type": "service"
-    }
-    
-    return jwt.encode(to_encode, settings.SERVICE_SECRET_KEY, algorithm=ALGORITHM)

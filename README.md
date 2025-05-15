@@ -1,10 +1,25 @@
-# [Next.js Enterprise Boilerplate](https://blazity.com/open-source/nextjs-enterprise-boilerplate)
+# grimOS Platform
 
-A production-ready template for building enterprise applications with Next.js. This boilerplate provides a solid foundation with carefully selected technologies and ready-to-go infrastructure to help you develop high-quality applications efficiently.
+grimOS is a comprehensive platform for security operations, workflow automation, and cognitive analysis. It consists of three main modules:
 
-## Motivation
+1. **Security Module**: Threat intelligence and user behavior analytics
+2. **Operations Module**: Workflow management and data integration
+3. **Cognitive Core Module**: AI-powered analysis and natural language processing
 
-While most Next.js boilerplates focus on individual developer needs with excessive complexity, **next-enterprise** prioritizes strategic simplicity for enterprise teams. It offers a streamlined foundation with high-impact features that maximize developer productivity and accelerate time-to-market for business-critical applications.
+## Architecture Overview
+
+grimOS uses a modern architecture with the following components:
+
+- **Backend**: FastAPI-based REST API with PostgreSQL database
+- **Frontend**: React-based web interface (separate repository)
+- **Services**: Redis for caching, Kafka for event processing
+
+## Project Structure
+
+- `/apps/backend`: Python backend application
+- `/apps/frontend`: Frontend application (optional)
+- `/docs`: API documentation and specifications
+- `/deploy`: Deployment scripts and configurations
 
 <a href="https://blazity.com/">
 <picture>
