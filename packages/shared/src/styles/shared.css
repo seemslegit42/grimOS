@@ -1,0 +1,266 @@
+/**
+ * Shared CSS styles for BitBrew Inc.
+ * 
+ * This file contains shared CSS styles that can be used
+ * across both the web (React/Vite) and frontend (Next.js) applications.
+ */
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 18, 18, 18;
+  --background-end-rgb: 10, 10, 10;
+  
+  /* Digital Weave Palette */
+  --primary-accent: 126, 211, 33;     /* #7ED321 - Neon Green */
+  --secondary-accent: 0, 191, 255;    /* #00BFFF - Cyan Blue */
+  --tertiary-accent: 255, 29, 88;     /* #FF1D58 - Magenta Red */
+  
+  /* Glassmorphism Variables */
+  --glass-bg-opacity: 0.1;
+  --glass-border-opacity: 0.2;
+  --glass-blur: 10px;
+}
+
+/* Base styles */
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+  min-height: 100vh;
+}
+
+/* Digital Weave Background */
+.digital-weave-bg {
+  position: relative;
+}
+
+.digital-weave-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(126, 211, 33, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 211, 33, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  z-index: -1;
+}
+
+/* Animated gradient background */
+.animated-gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  opacity: 0.05;
+  background: linear-gradient(
+    -45deg,
+    rgba(126, 211, 33, 0.3),
+    rgba(0, 191, 255, 0.3),
+    rgba(255, 29, 88, 0.3),
+    rgba(126, 211, 33, 0.3)
+  );
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Glassmorphic UI Components */
+.glass {
+  background: rgba(18, 18, 18, var(--glass-bg-opacity));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(255, 255, 255, var(--glass-border-opacity));
+  border-radius: 0.5rem;
+}
+
+.glass-primary {
+  --glass-bg-opacity: 0.15;
+  --glass-border-opacity: 0.1;
+  background: rgba(18, 18, 18, var(--glass-bg-opacity));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(126, 211, 33, var(--glass-border-opacity));
+  border-radius: 0.5rem;
+}
+
+.glass-secondary {
+  --glass-bg-opacity: 0.15;
+  --glass-border-opacity: 0.1;
+  background: rgba(18, 18, 18, var(--glass-bg-opacity));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(0, 191, 255, var(--glass-border-opacity));
+  border-radius: 0.5rem;
+}
+
+.glass-accent {
+  --glass-bg-opacity: 0.15;
+  --glass-border-opacity: 0.1;
+  background: rgba(18, 18, 18, var(--glass-bg-opacity));
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(255, 29, 88, var(--glass-border-opacity));
+  border-radius: 0.5rem;
+}
+
+.glass-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+/* Cyberpunk Neon Text */
+.neon-text-primary {
+  color: rgb(var(--primary-accent));
+  text-shadow: 0 0 5px rgba(var(--primary-accent), 0.5);
+}
+
+.neon-text-secondary {
+  color: rgb(var(--secondary-accent));
+  text-shadow: 0 0 5px rgba(var(--secondary-accent), 0.5);
+}
+
+.neon-text-tertiary {
+  color: rgb(var(--tertiary-accent));
+  text-shadow: 0 0 5px rgba(var(--tertiary-accent), 0.5);
+}
+
+/* Animated Gradient Border */
+@keyframes borderGlow {
+  0% {
+    border-image-source: linear-gradient(
+      45deg, 
+      rgba(var(--primary-accent), 1), 
+      rgba(var(--secondary-accent), 0.5)
+    );
+  }
+  50% {
+    border-image-source: linear-gradient(
+      45deg, 
+      rgba(var(--secondary-accent), 0.5), 
+      rgba(var(--tertiary-accent), 1)
+    );
+  }
+  100% {
+    border-image-source: linear-gradient(
+      45deg, 
+      rgba(var(--tertiary-accent), 1), 
+      rgba(var(--primary-accent), 0.5)
+    );
+  }
+}
+
+.gradient-border {
+  border: 2px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(
+    45deg, 
+    rgba(var(--primary-accent), 1), 
+    rgba(var(--secondary-accent), 0.5)
+  );
+  animation: borderGlow 8s infinite alternate;
+}
+
+/* Cyber glow effect */
+.cyber-glow {
+  transition: all 0.3s ease;
+}
+
+.cyber-glow:hover {
+  box-shadow: 0 0 15px rgba(126, 211, 33, 0.5);
+}
+
+/* Pulse animation */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Data stream background */
+.data-stream-bg {
+  position: relative;
+  background-color: #121212;
+}
+
+.data-stream-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(126, 211, 33, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(126, 211, 33, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: -1px -1px;
+  z-index: -1;
+}
+
+/* Utility classes */
+.text-gradient {
+  background: linear-gradient(to right, #7ED321, #00BFFF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-pattern {
+  background-color: #121212;
+  background-image: radial-gradient(rgba(126, 211, 33, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}

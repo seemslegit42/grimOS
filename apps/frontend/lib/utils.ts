@@ -1,6 +1,3 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+// Re-export utilities from shared package
+export * from '@grimos/shared/utils';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}

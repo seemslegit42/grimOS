@@ -3,10 +3,10 @@
 import { Button } from '@/components/ui/Button';
 import { GlassmorphicAlert } from '@/components/ui/GlassmorphicAlert';
 import {
-    DashboardGrid,
-    DashboardLayout,
-    DashboardSection,
-    DashboardWidget
+  DashboardGrid,
+  DashboardLayout,
+  DashboardSection,
+  DashboardWidget
 } from '@/components/ui/GlassmorphicDashboard';
 import { GlassmorphicPanel } from '@/components/ui/GlassmorphicPanel';
 import { GlassmorphicSidebar } from '@/components/ui/GlassmorphicSidebar';

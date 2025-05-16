@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import shared CSS from the shared package */
+@import '@bitbrew/shared/src/styles/shared.css';
+
 :root {
   --background: #121212;
   --primary-accent: #7ED321;

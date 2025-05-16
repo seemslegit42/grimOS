@@ -3,8 +3,14 @@
 
 version: '3.8'
 
+# Extend the base docker-compose file
+x-extends:
+  file: docker-compose.base.yml
+  service: services
+
 services:
   # Data Infrastructure with production settings
+  # Override base services with production-specific configurations
   postgres:
     image: postgres:16-alpine
     environment:
@@ -80,6 +86,7 @@ services:
           cpus: '2'
           memory: 4G
 
+  # Additional services for production
   mongo:
     image: mongo:6-jammy
     restart: always

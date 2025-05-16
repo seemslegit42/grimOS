@@ -1,0 +1,26 @@
+{
+  "name": "bitbrew-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w packages/client & npm run dev -w packages/server",
+    "build": "npm run build -w packages/client && npm run build -w packages/server",
+    "start": "npm run start -w packages/server",
+    "check": "tsc -b",
+    "db:push": "drizzle-kit push"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/vite": "^4.1.3",
+    "@types/node": "20.16.11",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.30.4",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.1",
+    "typescript": "5.6.3"
+  }
+}
