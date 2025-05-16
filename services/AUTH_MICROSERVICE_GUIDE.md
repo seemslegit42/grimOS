@@ -1,4 +1,4 @@
-# Authentication Microservice Guide
+# grimOS Authentication Microservice Guide
 
 This guide explains how the authentication and user management functionality has been extracted from the monolithic FastAPI backend into a standalone microservice architecture.
 

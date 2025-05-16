@@ -1,4 +1,4 @@
-import { GlassmorphicCard } from '@grimos/shared/components';
+import { GlassmorphicCard } from '@bitbrew/shared/components';
 
 // Re-export the shared component
 export { GlassmorphicCard };

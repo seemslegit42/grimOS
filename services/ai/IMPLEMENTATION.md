@@ -1,4 +1,4 @@
-# AI Service Implementation
+# grimOS AI Service Implementation
 
 This document outlines the implementation of the AI service that integrates Gemini, Groq, and OpenAI using the Vercel AI SDK.
 
@@ -31,7 +31,7 @@ The `AIService` class provides a unified interface for all providers, handling:
 The `VercelAISDK` class provides endpoints compatible with the Vercel AI SDK:
 - `/vercel-ai/v1/chat/completions`
 - `/vercel-ai/v1/completions`
-- `/vercel-ai/v1/embeddings`
+- `/vercel-ai/v1/embeddings` # Corrected path
 - `/vercel-ai/v1/models`
 
 ### 4. Native API

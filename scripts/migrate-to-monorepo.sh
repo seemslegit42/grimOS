@@ -37,7 +37,7 @@ pnpm install
 
 # Build shared package
 echo "Building shared package..."
-pnpm --filter @grimos/shared build
+pnpm --filter @bitbrew/shared build
 
 echo "Migration completed successfully!"
 echo "Please review the new structure in the apps/ and packages/ directories."

@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "grimoire-bitbrew-service"
-version = "0.1.0"
-description = "BitBrew Intelligence Microservice for Grimoire OS"
+name = "grimos-intelligence-service"
+version = "0.0.0"
+description = "BitBrew Intelligence Microservice for grimOS"
 authors = ["Your Name <your.email@example.com>"]
 
 [tool.poetry.dependencies]

@@ -32,7 +32,7 @@ call pnpm install
 
 REM Build shared package
 echo Building shared package...
-call pnpm --filter @grimos/shared build
+call pnpm --filter @bitbrew/shared build
 
 echo Migration completed successfully!
 echo Please review the new structure in the apps/ and packages/ directories.

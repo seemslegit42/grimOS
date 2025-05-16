@@ -1,6 +1,6 @@
-# grimOS Platform
+# grimOS
 
-grimOS (Grimoire™) is a comprehensive AI-powered operating system that brings together agents, workflows, interoperability, and natural language interaction to transform enterprise operations. The platform consists of several core modules:
+grimOS (Grimoire™) is a comprehensive AI-powered operating system that brings together agents, workflows, interoperability, and natural language interaction to transform enterprise operations.
 
 # Architecture Overview (Based on System Architecture Document)
 
@@ -37,7 +37,6 @@ The core modules are implemented as separate microservices within the `services`
   - `/services/composable-runes`: Workflow engine service
   - `/services/interoperability`: Integration service
   - `/services/api-gateway`: API Gateway service
-- `/packages`: Shared libraries and utilities
 - `/docs`: Documentation and specifications
 - `/charts`: Kubernetes deployment configurations
 - `/deploy`: Deployment scripts and configurations
@@ -45,8 +44,6 @@ The core modules are implemented as separate microservices within the `services`
 - `/packages/shared`: Shared TypeScript utilities, components, and types used across frontend and backend
 - `/packages/shared-python`: Shared Python utilities and libraries used across Python services
 - `/services/api-gateway`: Acts as the entry point for external requests, routing them to the appropriate microservices.
-- `/services/auth`: Handles user authentication and authorization (part of the User Module).
-- `/services/bitbrew`: This service's purpose is not explicitly defined in the main module list but appears to be a service within the `services` directory. Further analysis of its code would be needed to determine its function and dependencies.
 - `/services/event-consumer`: Likely consumes events from the Kafka message bus for various purposes (e.g., triggering actions, updating databases).
 - `/services/protos`: Contains Protocol Buffer definitions for gRPC communication between services.
 - `/services/stats`: Likely handles statistics collection and reporting.
@@ -67,17 +64,15 @@ The core modules are implemented as separate microservices within the `services`
 </picture>
 </a>
 
-> [!NOTE] > **Blazity** is a group of Next.js architects. We help organizations architect, optimize, and deploy high-performance Next.js applications at scale. Contact us at [contact@blazity.com](https://blazity.com) if you’d like to talk about your project.
-
 ## Documentation
 
 There is a separate documentation that explains its functionality, highlights core business values and technical decisions, provides guidelines for future development, and includes architectural diagrams.
 
-We encourage you to [visit our docs (docs.blazity.com)](https://docs.blazity.com) to learn more
+More documentation is available in the `/docs` directory.
 
 ## Integrated features
 
-### Boilerplate
+### Development Features
 
 With this template you will get all the boilerplate features included:
 
@@ -106,15 +101,11 @@ With this template you will get all the boilerplate features included:
 
 ### Infrastructure & deployments
 
-#### Vercel
-
-Easily deploy your Next.js app with [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=github&utm_campaign=next-enterprise) by clicking the button below:
-
-[![Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/Blazity/next-enterprise)
+grimOS is designed for cloud-native deployment, primarily using Kubernetes.
 
 #### Custom cloud infrastructure
 
-**next-enterprise** offers dedicated infrastructure as code (IaC) solutions built with Terraform, designed specifically for deploying Next.js applications based on our extensive experience working with enterprise clients.
+grimOS includes Kubernetes charts for deployment, located in the `/charts` directory.
 
 Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart with the deployments using simple CLI.
 
@@ -135,11 +126,7 @@ Learn more in our [documentation (docs.blazity.com)][docs] how to quickstart wit
 _... more coming soon_
 
 ### Team & maintenance
-
-**next-enterprise** is backed and maintained by [Blazity](https://blazity.com), providing up to date security features and integrated feature updates.
-
 #### Active maintainers
-
 * Igor Klepacki ([neg4n](https://github.com/neg4n)) - Open Source Software Developer
 * Tomasz Czechowski ([tomaszczechowski](https://github.com/tomaszczechowski)) - Solutions Architect & DevOps
 * Jakub Jabłoński ([jjablonski-it](https://github.com/jjablonski-it)) - Head of Integrations
@@ -152,4 +139,4 @@ _... more coming soon_
 
 MIT
 
-[docs]: https://docs.blazity.com/next-enterprise/deployments/enterprise-cli
+[docs]: ./docs

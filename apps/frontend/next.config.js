@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@grimos/shared'],
-  // Explicitly set the app directory to be at the root level
   experimental: {
     appDir: true,
   },

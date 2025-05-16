@@ -10,7 +10,7 @@ from app.services.ai_providers import OpenAIProvider, GeminiProvider, GroqProvid
 
 class AIService:
     """
-    Main AI service that handles integration with all providers
+    grimOS AI service that handles integration with all providers
     """
     def __init__(self):
         self.providers = {}

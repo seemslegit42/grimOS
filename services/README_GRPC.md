@@ -1,10 +1,10 @@
-# gRPC Integration Guide for Grimoire OS Microservices
+# gRPC Integration Guide for grimOS Microservices
 
-This guide provides detailed instructions for implementing and using gRPC for inter-service communication in the Grimoire OS platform.
+This guide provides detailed instructions for implementing and using gRPC for inter-service communication in the grimOS platform.
 
 ## Overview
 
-The Grimoire OS platform uses gRPC for efficient, type-safe, synchronous communication between microservices. This implementation includes:
+The grimOS platform uses gRPC for efficient, type-safe, synchronous communication between microservices. This implementation includes:
 
 1. Protocol Buffer (protobuf) definitions for service APIs
 2. Generated Python gRPC server and client code

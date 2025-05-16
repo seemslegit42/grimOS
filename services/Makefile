@@ -46,7 +46,7 @@ create-admin:
 
 # View help information
 help:
-	@echo "Grimoire OS Microservices"
+	@echo "grimOS Microservices"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make up          Start all services in detached mode"

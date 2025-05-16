@@ -1,4 +1,4 @@
-# Grimoire OS Microservices
+# grimOS Microservices
 
 This directory contains the microservices architecture for Grimoire OS.
 
