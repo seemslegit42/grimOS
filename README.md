@@ -2,12 +2,19 @@
 
 grimOS (Grimoire™) is a comprehensive AI-powered operating system that brings together agents, workflows, interoperability, and natural language interaction to transform enterprise operations. The platform consists of several core modules:
 
-1. **Cognitive Core**: AI agent lifecycle management, collaboration, predictive intelligence
-2. **Composable Runes (Workflow Engine)**: Low-code workflow designer and execution engine
-3. **Interoperability Engine**: Integration with external enterprise systems (iPaaS)
-4. **Security Module**: Threat intelligence, UBA, and security orchestration
-5. **Operations Module**: Workflow automation and business process management
-6. **User Module**: User authentication, profile management, and authorization
+# Architecture Overview (Based on System Architecture Document)
+
+grimOS employs a modular and layered architecture designed for scalability, maintainability, and flexibility. The core design principles include a microservices approach, event-driven communication, and clear separation of concerns across different tiers.
+
+## High-Level Architecture
+
+The grimOS architecture can be visualized with the following logical layers and tiers:
+
+### Overview Diagram
+
+*(Based on the conceptual diagram described in the System Architecture Document)*
+
+
 
 ## Architecture Overview
  
