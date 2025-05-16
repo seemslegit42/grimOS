@@ -11,5 +11,4 @@ api_router = APIRouter()
 api_router.include_router(workflows.router, prefix="/workflows", tags=["workflows"])
 api_router.include_router(health.router, prefix="/health", tags=["health"])
 
-# Additional endpoints to be implemented
-# api_router.include_router(runes.router, prefix="/runes", tags=["runes"])
+api_router.include_router(runes.router, prefix="/runes", tags=["runes"])

@@ -51,7 +51,7 @@ class WorkflowVersion(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     workflow_id = Column(UUID(as_uuid=True), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False)
     version = Column(Integer, nullable=False)
-    definition = Column(JSONB, nullable=False)  # The actual workflow definition (nodes, connections, etc.)
+    definition = Column(JSONB, nullable=False)  # The workflow definition in n8n JSON format
     comment = Column(Text, nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -109,4 +109,9 @@ class RuneDefinition(Base):
     is_verified = Column(Boolean, default=False)
     version = Column(String(50), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())    
+    # n8n integration fields
+    n8n_node_type = Column(String(255), nullable=True)
+    n8n_node_config = Column(JSONB, nullable=True)
+    input_mapping = Column(JSONB, nullable=True)
+    output_mapping = Column(JSONB, nullable=True)

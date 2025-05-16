@@ -216,20 +216,17 @@ async def list_workflows(
     Otherwise returns workflows owned by current user plus public workflows
     """
     # This endpoint would typically use a filter service to handle the query params
-    # For brevity, we'll just return a sample response
-    return [
-        {
-            "id": uuid.uuid4(),
-            "name": "Sample Workflow",
-            "description": "This is a sample workflow",
-            "owner_id": current_user.id,
-            "category": "automation",
-            "tags": ["sample", "demo"],
-            "status": "published",
-            "is_public": True,
-            "is_template": False,
-            "created_at": "2025-05-15T10:00:00Z",
-            "updated_at": "2025-05-15T10:00:00Z",
-            "latest_version": 1
-        }
-    ]
+    # For now, we implement basic filtering and access control
+    
+    # Define the owner ID to filter by. If not provided, list current user's and public workflows.
+    filter_owner_id = owner_id if owner_id else current_user.id
+
+    workflows = await workflow_service.list_workflows(
+        owner_id=filter_owner_id,
+        category=category,
+        is_public=is_public,
+        is_template=is_template,
+        current_user_id=current_user.id # Pass current user for access control
+    )
+
+    return workflows

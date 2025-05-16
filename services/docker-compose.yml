@@ -1,5 +1,6 @@
 version: '3.8'
 
+
 services:
   api-gateway:
     build:
@@ -163,6 +164,20 @@ services:
       - kafka
     restart: unless-stopped
 
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - WEBHOOK_URL=http://api-gateway:5000/n8n/webhook/
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: unless-stopped
+
 volumes:
   auth-postgres-data:
   user-postgres-data:
@@ -171,3 +186,4 @@ networks:
   default:
     name: grimoire-network
     driver: bridge
+

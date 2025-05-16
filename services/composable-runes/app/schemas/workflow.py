@@ -37,8 +37,8 @@ class WorkflowBase(BaseModel):
 class WorkflowCreate(WorkflowBase):
     """Schema for creating a new workflow"""
     definition: Optional[Dict[str, Any]] = Field(
-        None, 
-        description="The workflow definition (nodes, connections, and properties)"
+        None,
+        description="The workflow definition in n8n workflow JSON format"
     )
 
 
@@ -56,7 +56,7 @@ class WorkflowUpdate(BaseModel):
 class WorkflowVersionCreate(BaseModel):
     """Schema for creating a new version of a workflow"""
     definition: Dict[str, Any] = Field(..., description="The workflow definition")
-    comment: Optional[str] = Field(None, description="Comment about changes in this version")
+    comment: Optional[str] = Field(None, description="Comment about changes in this version.")
 
 
 class WorkflowVersionResponse(BaseModel):
@@ -121,7 +121,11 @@ class RuneDefinitionBase(BaseModel):
     name: str
     description: Optional[str] = None
     category: str
-    definition: Dict[str, Any]
+ definition: Optional[Dict[str, Any]] = Field(
+ None,
+ description="The rune definition (inputs, outputs, logic), possibly including n8n node configuration"
+ )
+
     is_public: bool = False
     version: str
 
@@ -139,5 +143,18 @@ class RuneDefinitionResponse(RuneDefinitionBase):
     created_at: datetime
     updated_at: datetime
 
+    # Fields for n8n integration
+ n8n_node_type: Optional[str] = Field(
+ None, description="The type of n8n node corresponding to this rune"
+ )
+ n8n_node_config: Optional[Dict[str, Any]] = Field(
+ None, description="The JSON configuration for the n8n node"
+ )
+ input_mapping: Optional[Dict[str, str]] = Field(
+ None, description="Mapping from workflow inputs to n8n node parameters"
+ )
+ output_mapping: Optional[Dict[str, str]] = Field(
+ None, description="Mapping from n8n node outputs to workflow outputs"
+ )
     class Config:
         orm_mode = True

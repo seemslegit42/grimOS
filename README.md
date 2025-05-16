@@ -3,13 +3,14 @@
 grimOS (Grimoire™) is a comprehensive AI-powered operating system that brings together agents, workflows, interoperability, and natural language interaction to transform enterprise operations. The platform consists of several core modules:
 
 1. **Cognitive Core**: AI agent lifecycle management, collaboration, predictive intelligence
-2. **Composable Runes**: Low-code workflow designer and execution engine
+2. **Composable Runes (Workflow Engine)**: Low-code workflow designer and execution engine
 3. **Interoperability Engine**: Integration with external enterprise systems (iPaaS)
 4. **Security Module**: Threat intelligence, UBA, and security orchestration
 5. **Operations Module**: Workflow automation and business process management
+6. **User Module**: User authentication, profile management, and authorization
 
 ## Architecture Overview
-
+ 
 grimOS uses a modern, microservices-based architecture with the following components:
 
 - **Presentation Tier**: Next.js frontend with React, shadcn/ui, Tailwind CSS
@@ -18,11 +19,13 @@ grimOS uses a modern, microservices-based architecture with the following compon
 - **Messaging & Event Bus**: Apache Kafka for event-driven communication
 - **Data Tier**: PostgreSQL, Redis, ChromaDB (vector database), and more
 
+The core modules are implemented as separate microservices within the `services` directory.
+
 ## Project Structure
 
 - `/apps/backend`: Main backend application
 - `/apps/frontend`: Next.js frontend application
-- `/services`: Microservices components
+- `/services`: Microservices implementations of the core modules
   - `/services/ai`: Cognitive Core service
   - `/services/composable-runes`: Workflow engine service
   - `/services/interoperability`: Integration service
@@ -31,6 +34,23 @@ grimOS uses a modern, microservices-based architecture with the following compon
 - `/docs`: Documentation and specifications
 - `/charts`: Kubernetes deployment configurations
 - `/deploy`: Deployment scripts and configurations
+- `/apps/web`: Website and landing page for the platform (likely using a different framework or simpler setup than the main frontend)
+- `/packages/shared`: Shared TypeScript utilities, components, and types used across frontend and backend
+- `/packages/shared-python`: Shared Python utilities and libraries used across Python services
+- `/services/api-gateway`: Acts as the entry point for external requests, routing them to the appropriate microservices.
+- `/services/auth`: Handles user authentication and authorization (part of the User Module).
+- `/services/bitbrew`: This service's purpose is not explicitly defined in the main module list but appears to be a service within the `services` directory. Further analysis of its code would be needed to determine its function and dependencies.
+- `/services/event-consumer`: Likely consumes events from the Kafka message bus for various purposes (e.g., triggering actions, updating databases).
+- `/services/protos`: Contains Protocol Buffer definitions for gRPC communication between services.
+- `/services/stats`: Likely handles statistics collection and reporting.
+- `/services/user`: Manages user-related data and logic (the main part of the User Module).
+
+## Module Dependencies
+
+* The API Gateway depends on the other microservices to route requests.
+* The Frontend application communicates with the services through the API Gateway.
+* Services likely communicate with each other via gRPC (using definitions in `/services/protos`) and/or the Kafka message bus.
+* Services interact with the Data Tier (PostgreSQL, Redis, ChromaDB).
 
 <a href="https://blazity.com/">
 <picture>
