@@ -57,5 +57,6 @@
         "@modelcontextprotocol/server-sequential-thinking"
       ]
     }
-  }
+  },
+  "terminal.integrated.defaultProfile.windows": "PowerShell"
 }
