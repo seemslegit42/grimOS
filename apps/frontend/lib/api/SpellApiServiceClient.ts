@@ -1,14 +1,13 @@
-import { SpellMetadata } from '@/lib/store/RuneForgeStore';
-import { N8nWorkflowJsonType } from '@/lib/utils/N8NJsonTransformerUtil';
+import { createSpellApiServiceClient, SpellData } from '@grimos/shared-utils-ts';
 
-// Define the structure of the spell data as expected by/from the backend
-export interface SpellData extends SpellMetadata {
-  workflow_json: N8nWorkflowJsonType;
-  // Potentially other fields like user_id, created_at, updated_at if returned by backend
-}
+// Create and export the client instance
+const API_BASE_URL = process.env.NEXT_PUBLIC_GRIMOS_API_URL || 'http://localhost:8000/api/v1';
 
-// Base URL for the FastAPI backend
-// This should ideally be configurable, e.g., through environment variables
+// Using the factory from the shared package
+const SpellApiServiceClient = createSpellApiServiceClient(API_BASE_URL);
+
+export default SpellApiServiceClient;
+export type { SpellData };
 const API_BASE_URL = process.env.NEXT_PUBLIC_GRIMOS_API_URL || 'http://localhost:8000/api/v1';
 
 /**
