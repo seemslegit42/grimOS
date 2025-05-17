@@ -1,6 +1,4 @@
-import { createRuneForgeStore, RuneForgeState } from '@grimos/shared-utils-ts';
-import { createSpellApiServiceClient } from '@grimos/shared-utils-ts';
-import { SpellMetadata } from '@grimos/shared-types';
+import { createRuneForgeStore, createSpellApiServiceClient, RuneForgeState } from '@grimos/shared-utils-ts';
 
 // Create API client
 const API_BASE_URL = process.env.NEXT_PUBLIC_GRIMOS_API_URL || 'http://localhost:8000/api/v1';

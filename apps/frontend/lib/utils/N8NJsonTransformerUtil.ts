@@ -1,20 +1,21 @@
-import { RuneForgeNodeData } from '@grimos/shared-types/rune-forge';
-import { Edge, Node } from 'reactflow';
+// This file is a re-export from the shared package
+// Keeping this file for backward compatibility
+import { n8nJsonTransformer, transformFromN8nJson, transformToN8nJson } from '@grimos/shared-utils-ts';
+export { n8nJsonTransformer, transformFromN8nJson, transformToN8nJson };
 
-// N8N type definitions based on common n8n workflow structure
-// These types should be refined to match the exact n8n JSON schema used by the target n8n version.
-export interface N8nNodeType {
-  id: string;
-  name: string; // User-defined name or label for the node instance
-  type: string; // The actual n8n node type (e.g., 'n8n-nodes-base.httpRequest')
-  typeVersion: number;
-  position: [number, number]; // [x, y]
-  parameters: Record<string, any>;
-  credentials?: Record<string, any>;
-  notes?: string;
-  disabled?: boolean;
-  // Potentially other n8n-specific fields like 'retryOnFail', 'continueOnFail'
-}
+// Re-export types from shared package for backward compatibility
+  import {
+    N8nConnectionEntry,
+    N8nConnectionsType,
+    N8nConnectionTarget,
+    N8nNodeType,
+    N8nWorkflowJsonType
+  } from '@grimos/shared-types';
+
+export type {
+  N8nConnectionEntry,
+  N8nConnectionsType, N8nConnectionTarget, N8nNodeType, N8nWorkflowJsonType
+};
 
 export interface N8nConnectionTarget {
   node: string; // ID of the target node
