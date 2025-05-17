@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { DashboardLayout } from '@/components/ui/GlassmorphicDashboard';
 import { GlassmorphicSidebar } from '@/components/ui/GlassmorphicSidebar';
 import { Rune, WorkflowDefinition } from '@/types/workflow';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

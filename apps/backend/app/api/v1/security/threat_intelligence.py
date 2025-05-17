@@ -7,6 +7,7 @@ from app.db.session import get_db
 from app.schemas.security import ThreatIndicator
 from app.schemas.common import PaginatedResponse, PaginationMeta
 from app.repositories.threat_indicator import threat_indicator_repository
+from app.services.threat_intelligence_ingestion import fetch_threat_intelligence_feed, ingest_threat_intelligence
 
 router = APIRouter(
     prefix="/threat-intelligence",
@@ -61,3 +62,18 @@ async def get_threat_indicators(
         data=indicators,
         pagination=pagination,
     )
+
+@router.post("/ingest", status_code=201)
+async def ingest_feed(
+    feed_url: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Ingest threat intelligence data from a feed URL.
+    """
+    try:
+        feed_data = fetch_threat_intelligence_feed(feed_url)
+        ingest_threat_intelligence(db, feed_data)
+        return {"message": "Feed ingested successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

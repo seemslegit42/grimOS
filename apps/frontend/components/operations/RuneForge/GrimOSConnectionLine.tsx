@@ -1,11 +1,11 @@
-typescriptreact
+import { motion } from 'framer-motion';
 import React from 'react';
-import { BaseEdge, EdgeLabelRenderer, EdgeProps, getBezierPath } from 'react-flow-renderer'; // Adjust import based on your react-flow version or use @react-flow/core
-import { twMerge } from 'tailwind-merge';
+import { EdgeProps, getBezierPath } from 'reactflow'; // Corrected import for reactflow
 
-// Define prop types if needed, based on your edge data structure
+// Removed twMerge import as it's not used in the corrected version of the component
+
 interface GrimOSConnectionLineProps extends EdgeProps {
-  // Add any custom properties for your edge
+  // Custom properties for the edge can be added here
 }
 
 const GrimOSConnectionLine: React.FC<GrimOSConnectionLineProps> = ({
@@ -17,10 +17,9 @@ const GrimOSConnectionLine: React.FC<GrimOSConnectionLineProps> = ({
   sourcePosition,
   targetPosition,
   style = {},
-  data, // Access custom edge data here
   markerEnd,
 }) => {
-  const [edgePath, labelX, labelY] = getBezierPath({
+  const [edgePath] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -29,44 +28,34 @@ const GrimOSConnectionLine: React.FC<GrimOSConnectionLineProps> = ({
     targetPosition,
   });
 
-  // Apply grimOS styling
+  const gradientId = `grimOSGradient-${id}`;
+
+  // grimOS styling for the connection line
   const grimOSStyle = {
     strokeWidth: 2,
-    stroke: 'url(#grimOSGradient)', // Example: Use a gradient defined in SVG defs
-    // Add other grimOS specific styles
-    ...style, // Allow overriding with inline styles if necessary
+    stroke: `url(#${gradientId})`,
+    fill: 'none',
+    ...style,
   };
 
   return (
     <>
-      {/* Define SVG gradient in your main SVG element or a Defs component */}
-      {/* <defs>
-        <linearGradient id="grimOSGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#7ED321" />
-          <stop offset="100%" stopColor="#00AEEF" />
+      <defs>
+        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style={{ stopColor: '#7ED321', stopOpacity: 1 }} /> {/* Lime Green */}
+          <stop offset="100%" style={{ stopColor: '#00BFFF', stopOpacity: 1 }} /> {/* Electric Blue */}
         </linearGradient>
-      </defs> */}
-      <BaseEdge path={edgePath} markerEnd={markerEnd} style={grimOSStyle} />
-      {/* Optional: Edge Label Renderer for displaying text on the edge */}
-      {/* <EdgeLabelRenderer
-        x={labelX}
-        y={labelY}
-        // You can adjust the position of the label here
-        transform={`translate(-50%, -50%) translate(${labelX},${labelY})`}
-        className="nodrag nopan" // Prevent dragging/panning when interacting with the label
-      >
-        <div
-          style={{
-            pointerEvents: 'all',
-          }}
-          className={twMerge(
-            'px-2 py-1 text-xs font-bold text-white bg-black rounded-md',
-            data?.labelClassName // Allow custom class from edge data
-          )}
-        >
-          {data?.label} {/* Access label from edge data */}
-        </div>
-      </EdgeLabelRenderer> */}
+      </defs>
+      <motion.path
+        className="react-flow__edge-path" // Standard React Flow class for paths
+        d={edgePath}
+        markerEnd={markerEnd}
+        style={grimOSStyle}
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{ duration: 0.7, ease: "easeInOut" }}
+      />
+      {/* EdgeLabelRenderer and related logic for labels can be added here if needed */}
     </>
   );
 };

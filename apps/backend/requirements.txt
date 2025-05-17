@@ -1,0 +1,14 @@
+fastapi
+pydantic[email]==1.10.8
+passlib==1.7.4
+sqlalchemy==1.4.47
+uvicorn
+PyJWT==2.6.0
+requests
+authlib==1.2.0
+httpx==0.24.1
+python-dotenv
+itsdangerous==2.1.2
+redis==4.5.5
+prometheus-client==0.17.0
+starlette-exporter==0.17.0

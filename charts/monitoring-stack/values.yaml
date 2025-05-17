@@ -1,0 +1,33 @@
+# Values for the monitoring stack
+prometheus:
+  enabled: true
+  replicas: 1
+  resources:
+    limits:
+      memory: 2Gi
+      cpu: 1
+    requests:
+      memory: 1Gi
+      cpu: 500m
+
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: 500m
+    requests:
+      memory: 512Mi
+      cpu: 250m
+
+alertmanager:
+  enabled: true
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: 500m
+    requests:
+      memory: 512Mi
+      cpu: 250m

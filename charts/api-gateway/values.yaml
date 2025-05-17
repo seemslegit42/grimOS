@@ -1,0 +1,29 @@
+# Values for API Gateway
+apiGateway:
+  enabled: true
+  image:
+    repository: "nginx"
+    tag: "latest"
+  service:
+    type: LoadBalancer
+    port: 80
+  routes:
+    - path: /backend
+      service: grimos-backend
+      port: 8000
+    - path: /frontend
+      service: grimos-frontend
+      port: 80
+kong:
+  enabled: true
+  replicas: 2
+  ingressController:
+    enabled: true
+    ingressClass: kong
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: 500m
+    requests:
+      memory: 512Mi
+      cpu: 250m

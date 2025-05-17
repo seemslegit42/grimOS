@@ -1,0 +1,48 @@
+\
+# Dockerfile for React (Vite) frontend applications
+# Using a multi-stage build for smaller and more secure images
+
+# --- Builder Stage ---
+# Use a Node.js version that matches your project's requirements
+FROM node:18-alpine as builder
+
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml (or package-lock.json/yarn.lock)
+COPY package.json pnpm-lock.yaml ./
+
+# Install pnpm (if not using a base image with pnpm)
+# Adjust version as needed
+RUN npm install -g pnpm@8
+
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the application code
+COPY . .
+
+# Build the React application for production
+# This command might vary based on your project setup (e.g., if it's in a workspace)
+# If your frontend app is in a sub-directory like 'apps/frontend', adjust WORKDIR and COPY accordingly
+# and ensure the build command targets that specific app.
+# Example for a monorepo setup where this Dockerfile is in the root:
+# RUN pnpm --filter ./apps/frontend build
+# For a standalone app, this is usually sufficient:
+RUN pnpm build
+
+# --- Runner Stage ---
+# Use a lightweight web server like Nginx to serve static assets
+FROM nginx:1.25-alpine
+
+# Copy the built static assets from the builder stage
+# The source path (e.g., /app/dist or /app/apps/frontend/dist) depends on your Vite build output directory
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy a custom Nginx configuration if needed (optional)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose the port Nginx listens on (default is 80)
+EXPOSE 80
+
+# Command to start Nginx
+CMD ["nginx", "-g", "daemon off;"]

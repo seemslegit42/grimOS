@@ -1,7 +1,7 @@
-import { GrimOSDashboard } from '@/features/dashboard-grimos';
-import { CyberpunkBackground } from '@/features/dashboard-grimos/components/cyberpunk-background';
-import { ErrorBoundary } from '@/features/dashboard-grimos/components/error-boundary';
+import { CyberpunkBackground } from '@/components/CyberpunkBackground';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Metadata } from 'next';
+import { GrimOSDashboard } from './dashboard';
 
 export const metadata: Metadata = {
   title: 'grimOS Dashboard',

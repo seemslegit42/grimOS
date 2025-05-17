@@ -1,24 +1,20 @@
 'use client'
 
 import { GlassmorphicCard } from "@/components/ui/GlassmorphicCard"
-import { useUser } from "@clerk/nextjs"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 
 export default function ProfilePage() {
-  const { user, isLoaded, isSignedIn } = useUser()
-  const router = useRouter()
-  
-  // Redirect if not signed in
-  useEffect(() => {
-    if (isLoaded && !isSignedIn) {
-      router.push('/sign-in')
-    }
-  }, [isLoaded, isSignedIn, router])
-
-  if (!isLoaded || !isSignedIn) {
-    return <div>Loading...</div>
-  }
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center p-6">
+      <GlassmorphicCard className="max-w-3xl w-full p-6">
+        <h1 className="text-2xl font-bold text-primary-accent mb-6">User Profile</h1>
+        <p className="text-gray-400 mb-4">
+          Authentication system is being reconfigured. 
+          The user profile page will be available again soon.
+        </p>
+      </GlassmorphicCard>
+    </main>
+  )
+}
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6">

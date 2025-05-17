@@ -23,18 +23,43 @@ dependencies = [
     "spacy>=3.7.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "black>=23.7.0",
-    "ruff>=0.0.287",
-    "mypy>=1.5.1",
-]
+[tool.poetry]
+name = "grimos-backend"
+version = "0.1.0"
+description = "GrimOS Backend API"
+authors = ["grimOS Team"]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0"
+fastapi = "0.110.0"
+pydantic = ">=2.0.0"
+sqlalchemy = ">=2.0.0"
+alembic = ">=1.12.0"
+psycopg = ">=3.1.12"
+kafka-python = "2.0.2"
+redis = ">=5.0.0"
+httpx = ">=0.25.0"
+uvicorn = {extras = ["standard"], version = ">=0.25.0"}
+python-dotenv = ">=1.0.0"
+pydantic-settings = ">=2.0.0"
+email-validator = ">=2.1.0"
+passlib = {extras = ["bcrypt"], version = ">=1.7.4"}
+python-jose = {extras = ["cryptography"], version = ">=3.3.0"}
+python-multipart = ">=0.0.7"
+nltk = ">=3.8.1"
+spacy = ">=3.7.0"
+
+
+[tool.poetry.dev-dependencies]
+pytest = ">=7.4.0"
+pytest-cov = ">=4.1.0"
+black = ">=23.7.0"
+ruff = ">=0.0.287"
+mypy = ">=1.5.1"
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 target-version = "py311"

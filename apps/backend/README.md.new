@@ -1,0 +1,243 @@
+# grimOS Backend
+
+This document provides comprehensive information about the grimOS backend services, architecture, and setup instructions.
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Architecture](#architecture)
+4. [Development Setup](#development-setup)
+5. [Docker Setup](#docker-setup)
+6. [Monitoring & Metrics](#monitoring--metrics)
+7. [API Gateway](#api-gateway)
+8. [Authentication](#authentication)
+9. [API Documentation](#api-documentation)
+
+## Overview
+
+The grimOS backend is a high-performance API server built with FastAPI that provides security, operations, and cognitive services. It features RBAC, OAuth 2.0 integration, caching, monitoring, and more.
+
+## Features
+
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - OAuth 2.0 integration (Google, GitHub, Microsoft)
+  - Role-Based Access Control (RBAC)
+  - Permissions management
+
+- **API Management**
+  - RESTful API design
+  - Rate limiting
+  - API versioning
+  - Comprehensive API documentation
+
+- **Caching & Performance**
+  - Redis-based caching
+  - Query optimization
+  - Connection pooling
+
+- **Monitoring & Metrics**
+  - Prometheus metrics collection
+  - Grafana dashboards
+  - Request tracing
+  - Performance monitoring
+
+- **Security**
+  - Input validation
+  - CORS configuration
+  - Security headers
+  - Rate limiting
+
+## Architecture
+
+The grimOS backend follows a modular architecture with the following components:
+
+- **API Layer**: FastAPI-based REST API
+- **Service Layer**: Business logic implementation
+- **Data Access Layer**: Database interactions (SQLAlchemy)
+- **Caching Layer**: Redis-based caching
+- **Monitoring**: Prometheus metrics and Grafana dashboards
+- **API Gateway**: Kong-based routing and authentication
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.11 or higher
+- PostgreSQL 15 or higher
+- Redis 6 or higher
+- Docker and Docker Compose (optional, for containerized setup)
+
+### Quick Setup
+
+For a quick setup, simply run:
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+This script will:
+1. Create a virtual environment if it doesn't exist
+2. Install all dependencies
+3. Set up environment variables
+4. Create the database if it doesn't exist
+5. Run database migrations
+
+### Manual Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/grimOS.git
+   cd grimOS
+   ```
+
+2. Create a virtual environment and activate it:
+   ```bash
+   # Using Python's venv module
+   python -m venv .venv
+   source .venv/bin/activate  # On Unix/macOS
+   # OR
+   .venv\Scripts\activate     # On Windows
+   ```
+
+3. Install the dependencies:
+   ```bash
+   cd apps/backend
+   pip install -e .
+   pip install -r requirements.txt
+   ```
+
+4. Create a `.env` file based on `.env.example`:
+   ```bash
+   cp .env.example .env
+   # Edit the .env file to set your environment variables
+   ```
+
+5. Run database migrations:
+   ```bash
+   alembic upgrade head
+   ```
+
+6. Start the development server:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+## Docker Setup
+
+The application can be run using Docker Compose:
+
+### Basic Services
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- PostgreSQL database
+- Redis cache
+- FastAPI backend
+
+### Full Stack (with Monitoring and API Gateway)
+
+```bash
+docker-compose -f docker-compose.full.yml up -d
+```
+
+This will start:
+- All basic services
+- Prometheus for metrics collection
+- Grafana for dashboards
+- Kong API Gateway
+- Node Exporter for system metrics
+
+## Monitoring & Metrics
+
+The application includes comprehensive monitoring using Prometheus and Grafana:
+
+### Prometheus Metrics
+
+Metrics are exposed at `/metrics` and include:
+- Request counts by endpoint and status code
+- Request latency
+- Database query performance
+- Cache hit/miss rates
+- OAuth login statistics
+
+### Grafana Dashboards
+
+Pre-configured dashboards provide visibility into:
+- API performance
+- Error rates
+- Database performance
+- Cache effectiveness
+- System resources
+
+### Setup
+
+To set up monitoring:
+
+```bash
+docker-compose -f docker-compose.monitoring.yml up -d
+```
+
+Access Grafana at `http://localhost:3000` with:
+- Username: admin
+- Password: admin (or as configured in environment variables)
+
+## API Gateway
+
+Kong API Gateway provides:
+
+- Request routing
+- Authentication
+- Rate limiting
+- Traffic monitoring
+- CORS support
+
+### Setup
+
+To set up the API Gateway:
+
+```bash
+docker-compose -f docker-compose.kong.yml up -d
+```
+
+Kong Admin UI (Konga) is available at `http://localhost:8002`
+
+## Authentication
+
+### JWT Authentication
+
+Traditional username/password authentication with JWT tokens:
+
+```bash
+POST /api/v1/auth/login
+{
+  "email": "user@example.com",
+  "password": "password"
+}
+```
+
+### OAuth 2.0
+
+OAuth 2.0 integration with:
+- Google
+- GitHub
+- Microsoft
+
+Endpoints:
+- Start OAuth flow: `/api/v1/auth/oauth/authorize/{provider}`
+- Callback: `/api/v1/auth/oauth/callback`
+
+## API Documentation
+
+Interactive API documentation is available at:
+- Swagger UI: `/docs`
+- ReDoc: `/redoc`
+
+## License
+
+[MIT License](LICENSE)

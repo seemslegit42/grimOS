@@ -1,0 +1,145 @@
+"""
+Main application module for the GrimOS API.
+"""
+from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import logging
+import time
+import traceback
+from contextlib import asynccontextmanager
+from typing import Callable, Awaitable
+
+from app.core.config import settings
+from app.api.v1.router import router as api_router
+from app.core.exceptions import BaseAPIException
+from app.middleware.jwt_validation import JWTValidationMiddleware
+from app.core.metrics_manager import get_metrics_manager, PROMETHEUS_AVAILABLE
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG if settings.DEBUG else logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger("grimos")
+
+# Get metrics manager
+metrics = get_metrics_manager()
+
+# Define application lifecycle context manager
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    """
+    Application lifecycle context manager.
+    
+    Handles setup and teardown of resources for the application.
+    """
+    # Initialize metrics
+    metrics.initialize(app)
+    
+    # Application startup tasks
+    logger.info(f"Starting GrimOS API v{app.version}")
+    logger.info(f"Environment: {settings.ENVIRONMENT}")
+    
+    logger.info("Application resources initialized")
+    
+    yield
+    
+    # Application shutdown tasks
+    logger.info("Shutting down application resources")
+
+# Create FastAPI app with lifespan
+app = FastAPI(
+    title="GrimOS API",
+    description="GrimOS Backend API for Security, Operations, and Cognitive services",
+    version="0.1.0",
+    lifespan=app_lifespan,
+)
+
+# Add JWT validation middleware
+app.add_middleware(JWTValidationMiddleware)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add Prometheus endpoint if available
+if PROMETHEUS_AVAILABLE:
+    from starlette_exporter import PrometheusMiddleware, handle_metrics
+    app.add_middleware(PrometheusMiddleware)
+    app.add_route("/metrics", handle_metrics)
+
+# Request middleware for logging and timing
+@app.middleware("http")
+async def log_requests(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
+    """Log incoming requests and their processing time."""
+    start_time = time.time()
+    
+    # Log the request
+    logger.debug(f"Request started: {request.method} {request.url}")
+    
+    # Record request start in metrics
+    metrics.record_request_started(request)
+    
+    # Process the request
+    try:
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        
+        # Add processing time header
+        response.headers["X-Process-Time"] = str(process_time)
+        
+        # Log the response
+        logger.debug(
+            f"Request completed: {request.method} {request.url} - "
+            f"Status: {response.status_code}, Time: {process_time:.4f}s"
+        )
+        
+        # Record request completion in metrics
+        metrics.record_request_completed(request, response.status_code, process_time)
+        
+        return response
+    except Exception as e:
+        # Log the error
+        logger.error(
+            f"Request failed: {request.method} {request.url} - Error: {str(e)}\n"
+            f"{traceback.format_exc()}"
+        )
+        
+        # Record error in metrics
+        metrics.record_error(str(request.url), type(e).__name__)
+        
+        raise
+
+# Exception handler for custom API exceptions
+@app.exception_handler(BaseAPIException)
+async def api_exception_handler(request: Request, exc: BaseAPIException):
+    # Record error in metrics
+    metrics.record_error(str(request.url), f"APIException:{exc.code}")
+    
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail, "code": exc.code},
+    )
+
+# Health check endpoint
+@app.get("/health")
+async def health_check() -> dict[str, str]:
+    """Health check endpoint."""
+    return {
+        "status": "ok",
+        "environment": settings.ENVIRONMENT,
+        "version": app.version,
+    }
+
+# Include routers
+app.include_router(api_router, prefix=settings.API_V1_STR)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=settings.DEBUG)

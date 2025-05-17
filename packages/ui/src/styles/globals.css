@@ -1,0 +1,79 @@
+// Filepath: /home/brylow/grimOS/packages/ui/src/styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Default grimOS palette from apps/frontend/app/globals.css */
+    /* Using HSL values for Tailwind CSS variable compatibility */
+    --background: 0 0% 8%; /* #141414, oklch(0.145 0 0) is approx this */
+    --foreground: 0 0% 98%; /* #fafafa */
+
+    --card: 0 0% 12%; /* #1f1f1f, oklch(0.205 0 0) is approx this */
+    --card-foreground: 0 0% 98%; /* #fafafa */
+
+    --popover: 0 0% 8%; /* #141414 */
+    --popover-foreground: 0 0% 98%; /* #fafafa */
+
+    --primary: 90 70% 50%; /* #7ED321 Lime Green */
+    --primary-foreground: 0 0% 8%; /* #141414 for text on primary */
+    --primary-accent: 90 70% 50%; /* #7ED321 */
+
+
+    --secondary: 200 100% 50%; /* #00BFFF Electric Blue */
+    --secondary-foreground: 0 0% 8%; /* #141414 for text on secondary */
+    --secondary-accent: 200 100% 50%; /* #00BFFF */
+
+    --tertiary-accent: 340 100% 55%; /* #FF1D58 Hot Pink */
+    
+    --muted: 0 0% 15%; /* Slightly lighter than card */
+    --muted-foreground: 0 0% 63%; /* #a1a1aa */
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%; /* #ff3b30 */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 18%; /* #2e2e2e */
+    --input: 0 0% 18%;
+    --ring: 90 70% 50%; /* Primary accent for focus rings */
+
+    --radius: 0.625rem; /* 10px */
+  }
+
+  .dark {
+    /* Define dark mode overrides if they differ significantly from the base,
+       but the base is already dark. This section can be expanded if a
+       true light theme is also supported by this package. */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 90 70% 50%;
+    --primary-foreground: 0 0% 8%;
+    --secondary: 200 100% 50%;
+    --secondary-foreground: 0 0% 8%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 70% 50%; /* Slightly less intense red for dark mode */
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 90 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

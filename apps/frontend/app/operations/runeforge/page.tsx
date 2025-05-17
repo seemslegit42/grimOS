@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/Button';
 import { DashboardLayout } from '@/components/ui/GlassmorphicDashboard';
 import { GlassmorphicSidebar } from '@/components/ui/GlassmorphicSidebar';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/lib/auth';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useRouter } from 'next/navigation';
 import { SearchIcon } from 'lucide-react';

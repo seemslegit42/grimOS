@@ -1,0 +1,72 @@
+name: grimOS CI
+
+on:
+  push:
+    branches:
+      - main # Or your primary development branch
+  pull_request:
+    branches:
+      - main # Or your primary development branch
+
+jobs:
+  lint-and-test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8 # Specify your pnpm version from package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Specify your Node.js version from package.json
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint frontend and shared packages
+        run: pnpm lint # Relies on turbo to run lint scripts in relevant packages
+
+      - name: Build frontend and shared packages
+        run: pnpm build # Relies on turbo to run build scripts (includes tsc type-checking)
+      
+      - name: Run frontend tests
+        run: pnpm test # Assuming this primarily targets JS/TS tests managed by turbo
+
+  python-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-service: [apps/backend, services/auth, services/user, services/bitbrew] # Add other python services as needed
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' 
+          # cache: 'poetry' # Enable if using poetry and caching dependencies
+
+      - name: Install Poetry
+        run: pipx install poetry
+
+      - name: Install Python dependencies for ${{ matrix.python-service }}
+        run: poetry install --no-interaction --no-ansi
+        working-directory: ./${{ matrix.python-service }}
+
+      - name: Run linters and type checkers for ${{ matrix.python-service }}
+        run: |
+          poetry run ruff check .
+          poetry run mypy .
+        working-directory: ./${{ matrix.python-service }}
+      
+      # Placeholder for Python tests if not covered by `pnpm test`
+      # - name: Run Python tests for ${{ matrix.python-service }}
+      #   run: poetry run pytest
+      #   working-directory: ./${{ matrix.python-service }}

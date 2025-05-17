@@ -63,3 +63,11 @@ class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.delete(obj)
         db.commit()
         return obj
+
+    def get_by_field(self, db: Session, field: str, value: Any) -> Optional[ModelType]:
+        """
+        Retrieve a single record by a specific field and value.
+        """
+        if hasattr(self.model, field):
+            return db.query(self.model).filter(getattr(self.model, field) == value).first()
+        return None

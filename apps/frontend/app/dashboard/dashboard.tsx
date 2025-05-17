@@ -1,11 +1,62 @@
 import { motion } from 'framer-motion';
 import { Activity, AlertCircle, AlertTriangle, CheckCircle, Cpu, Users } from 'lucide-react';
-import { useDashboardData } from '../../../web/features/dashboard-grimos/hooks/use-dashboard-data';
-import { Metrics } from '../../../web/features/dashboard-grimos/types';
 import { DashboardSkeleton } from './dashboard-skeleton';
-import { JobDistributionChart } from '../../components/ui/job-distribution-chart';
-import { MetricCard } from '../../components/ui/metric-card';
-import { WeeklyJobsChart } from '../../components/ui/weekly-jobs-chart';
+
+// Mock data types and hooks for dashboard
+interface Metrics {
+  total_users: number;
+  active_sessions: number;
+  ai_jobs_completed: number;
+  system_status: 'OK' | 'WARN' | 'ERROR';
+}
+
+interface DashboardData {
+  metrics: Metrics;
+  charts: {
+    weekly_jobs: { day: string; count: number }[];
+    job_distribution: { type: string; count: number }[];
+  };
+  updated_at: string;
+}
+
+// Mock hook to replace the missing useDashboardData
+function useDashboardData() {
+  // Mock dashboard data
+  const data: DashboardData = {
+    metrics: {
+      total_users: 1278,
+      active_sessions: 564,
+      ai_jobs_completed: 156842,
+      system_status: 'OK'
+    },
+    charts: {
+      weekly_jobs: [
+        { day: 'Mon', count: 120 },
+        { day: 'Tue', count: 230 },
+        { day: 'Wed', count: 310 },
+        { day: 'Thu', count: 270 },
+        { day: 'Fri', count: 350 },
+        { day: 'Sat', count: 190 },
+        { day: 'Sun', count: 140 }
+      ],
+      job_distribution: [
+        { type: 'Analytics', count: 42 },
+        { type: 'ML Training', count: 28 },
+        { type: 'Image Gen', count: 18 },
+        { type: 'Text Gen', count: 35 },
+        { type: 'Other', count: 12 }
+      ]
+    },
+    updated_at: new Date().toISOString()
+  };
+
+  return {
+    data,
+    isLoading: false,
+    error: null,
+    refetch: () => console.log('Refetching data...')
+  };
+}
 
 /**
  * Main dashboard component that displays metrics and charts

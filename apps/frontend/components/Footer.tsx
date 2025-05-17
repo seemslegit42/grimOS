@@ -1,14 +1,13 @@
-import { 
-  Twitter, 
-  Linkedin, 
-  Github, 
-  Shield,
-  Terminal,
-  FileCode,
-  BookOpen,
-  Lock
-} from "lucide-react";
 import { motion } from "framer-motion";
+import {
+    FileCode,
+    Github,
+    Linkedin,
+    Lock,
+    Shield,
+    Terminal,
+    Twitter
+} from "lucide-react";
 
 export default function Footer() {
   return (
@@ -16,13 +15,13 @@ export default function Footer() {
       <div className="container mx-auto px-6 sm:px-8 relative z-10">
         <div className="text-center mb-8 text-sm text-[#FFFFFF]/60 p-4 border border-[#00BFFF]/20 rounded-lg bg-[#121212]/40 hover:border-[#00BFFF]/40 transition-all duration-500 hover:shadow-[0_0_15px_rgba(0,191,255,0.15)]">
           <p className="mb-2"><strong className="text-[#00BFFF]">WARNING:</strong> This site has been known to cause spontaneous enlightenment. We recommend you prepare yourself mentally and if possible be sitting down. Side effects may include increased productivity, feelings of cyber-omnipotence, and occasional digital euphoria.</p>
-          <p>BitBrew Inc. is not responsible for any existential crises that may occur upon realizing your business decisions were inferior to what an AI would have made.</p>
+          <p>Grimoire is not responsible for any existential crises that may occur upon realizing your business decisions were inferior to what an AI would have made.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <a href="#" className="flex items-center space-x-2 mb-6">
-              <span className="text-[#7ED321] text-2xl font-bold">BitBrew</span>
-              <span className="text-[#FFFFFF] font-light">Inc.</span>
+              <span className="text-[#7ED321] text-2xl font-bold">Grimoire</span>
+              {/* <span className="text-[#FFFFFF] font-light">Inc.</span> */}
             </a>
             <p className="text-[#FFFFFF]/70 mb-6">
               Pioneering the unified intelligence layer for enterprises with grimOS, the cognitive operating system reshaping security, operations, and decision-making.
@@ -77,7 +76,7 @@ export default function Footer() {
               <span>Company</span>
             </h4>
             <ul className="space-y-3">
-              <li><a href="/about" className="text-[#FFFFFF]/70 hover:text-[#FF1D58] transition-colors duration-300">About BitBrew</a></li>
+              <li><a href="/about" className="text-[#FFFFFF]/70 hover:text-[#FF1D58] transition-colors duration-300">About Grimoire</a></li>
               <li><a href="/team" className="text-[#FFFFFF]/70 hover:text-[#FF1D58] transition-colors duration-300">Team</a></li>
               <li><a href="/faq" className="text-[#FFFFFF]/70 hover:text-[#FF1D58] transition-colors duration-300">FAQ</a></li>
               <li><a href="/#contact" className="text-[#FFFFFF]/70 hover:text-[#FF1D58] transition-colors duration-300">Contact</a></li>
@@ -98,7 +97,7 @@ export default function Footer() {
             <div className="flex items-center mb-4 md:mb-0">
               <Lock className="h-4 w-4 text-[#00BFFF] mr-2" />
               <p className="text-[#FFFFFF]/70">
-                &copy; {new Date().getFullYear()} BitBrew Inc. All rights reserved.
+                &copy; {new Date().getFullYear()} Grimoire. All rights reserved.
               </p>
             </div>
             <div className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2">

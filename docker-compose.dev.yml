@@ -74,6 +74,9 @@ services:
       - SECRET_KEY=dev-secret-key
       - ENVIRONMENT=development
       - DEBUG=true
+    image: ${DOCKER_REGISTRY_URL}/grimos-backend:latest
+    imagePullSecrets:
+      - name: regcred
     depends_on:
       - postgres
       - redis

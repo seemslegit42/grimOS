@@ -8,7 +8,7 @@ import {
 import { GlassmorphicSidebar } from '@/components/ui/GlassmorphicSidebar';
 import { GlassmorphicTable } from '@/components/ui/GlassmorphicTable';
 import { GlassmorphicTabs } from '@/components/ui/GlassmorphicTabs';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

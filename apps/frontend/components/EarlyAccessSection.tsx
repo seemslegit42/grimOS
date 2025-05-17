@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
 
 // Define form schema
 const earlyAccessSchema = z.object({
@@ -125,7 +125,7 @@ export default function EarlyAccessSection() {
                         </FormLabel>
                         <FormControl>
                           <Input 
-                            placeholder="BitBrew Inc" 
+                            placeholder="Grimoire Inc" 
                             {...field}
                             className="glass-darker border-[#00BFFF]/20 focus:border-[#00BFFF]/50 h-12"
                           />

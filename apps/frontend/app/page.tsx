@@ -12,23 +12,23 @@ import { useEffect } from "react";
 export default function Home() {
   // Update document title for SEO
   useEffect(() => {
-    document.title = "BitBrew Inc. — grimOS: The AI-Powered Cognitive Operating System";
+    document.title = "Grimoire — grimOS: The AI-Powered Cognitive Operating System";
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.');
+      metaDesc.setAttribute('content', 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.');
     } else {
       const newMetaDesc = document.createElement('meta');
       newMetaDesc.name = 'description';
-      newMetaDesc.content = 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.';
+      newMetaDesc.content = 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.';
       document.head.appendChild(newMetaDesc);
     }
 
     // Add Open Graph tags for better social media sharing
     const ogTags = [
-      { property: 'og:title', content: 'BitBrew Inc. — grimOS: The AI-Powered Cognitive Operating System' },
-      { property: 'og:description', content: 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.' },
+      { property: 'og:title', content: 'Grimoire — grimOS: The AI-Powered Cognitive Operating System' },
+      { property: 'og:description', content: 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:url', content: 'https://bitbrewinc.com' }
+      { property: 'og:url', content: 'https://grimoire.com' }
     ];
 
     ogTags.forEach(tag => {
@@ -73,23 +73,23 @@ import { useEffect } from "react";
 export default function Home() {
   // Update document title for SEO
   useEffect(() => {
-    document.title = "BitBrew Inc. — grimOS: The AI-Powered Cognitive Operating System";
+    document.title = "Grimoire — grimOS: The AI-Powered Cognitive Operating System";
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
-      metaDesc.setAttribute('content', 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.');
+      metaDesc.setAttribute('content', 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.');
     } else {
       const newMetaDesc = document.createElement('meta');
       newMetaDesc.name = 'description';
-      newMetaDesc.content = 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.';
+      newMetaDesc.content = 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.';
       document.head.appendChild(newMetaDesc);
     }
 
     // Add Open Graph tags for better social media sharing
     const ogTags = [
-      { property: 'og:title', content: 'BitBrew Inc. — grimOS: The AI-Powered Cognitive Operating System' },
-      { property: 'og:description', content: 'grimOS by BitBrew Inc. is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.' },
+      { property: 'og:title', content: 'Grimoire — grimOS: The AI-Powered Cognitive Operating System' },
+      { property: 'og:description', content: 'grimOS by Grimoire is the unified intelligence layer that integrates security, operations, and strategic decision-making into a self-optimizing platform for enterprises.' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:url', content: 'https://bitbrewinc.com' }
+      { property: 'og:url', content: 'https://grimoire.com' }
     ];
 
     ogTags.forEach(tag => {

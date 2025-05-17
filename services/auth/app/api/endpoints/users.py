@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.deps import SessionDep, get_current_active_user, get_current_active_superuser
-from app.core.security import verify_password
+from app.core.security import verify_password, get_password_hash
 from app.crud.user import (
     create_user,
     delete_user,
@@ -221,3 +221,36 @@ async def update_password(
     update_user(db=db, db_user=current_user, user_in=user_in)
     
     return Message(detail="Password updated successfully")
+
+
+@router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+async def register_user(
+    db: SessionDep,
+    user_in: UserCreate,
+) -> UserRead:
+    """
+    Register a new user.
+    """
+    # Check if email is already registered
+    if get_user_by_email(db, user_in.email):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
+        )
+
+    # Hash the password
+    hashed_password = get_password_hash(user_in.password)
+    user_in.password = hashed_password
+
+    # Create the user
+    user = create_user(db=db, user_in=user_in)
+
+    return UserRead(
+        id=str(user.id),
+        email=user.email,
+        full_name=user.full_name,
+        is_active=user.is_active,
+        is_superuser=user.is_superuser,
+        created_at=user.created_at,
+        updated_at=user.updated_at,
+    )

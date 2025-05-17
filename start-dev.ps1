@@ -32,17 +32,15 @@ foreach ($service in $services) {
     Ensure-Directory -Path $service
 }
 
-# Start Docker services for development
-Write-Host "Starting Docker containers for development..." -ForegroundColor Yellow
-docker-compose -f docker-compose.dev.yml up -d
+# Start Docker services for development with override
+Write-Host "Starting Docker containers for development with override..." -ForegroundColor Yellow
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 
-Write-Host "grimOS development environment is ready!" -ForegroundColor Green
+Write-Host "grimOS development environment is ready with override!" -ForegroundColor Green
 Write-Host "You can access the following services:" -ForegroundColor Cyan
 Write-Host "  - Frontend: http://localhost:3000" -ForegroundColor Cyan
 Write-Host "  - API Gateway: http://localhost:8080" -ForegroundColor Cyan
-Write-Host "  - Cognitive Core API: http://localhost:8001" -ForegroundColor Cyan
-Write-Host "  - Composable Runes API: http://localhost:8002" -ForegroundColor Cyan
-Write-Host "  - Interoperability API: http://localhost:8003" -ForegroundColor Cyan
+Write-Host "  - Auth Service: http://localhost:8000" -ForegroundColor Cyan
 Write-Host "" -ForegroundColor Cyan
 Write-Host "To run the frontend in development mode with hot reloading:" -ForegroundColor Cyan
 Write-Host "  cd apps/frontend" -ForegroundColor Cyan

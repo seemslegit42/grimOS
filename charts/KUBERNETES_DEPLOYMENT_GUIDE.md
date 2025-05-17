@@ -375,3 +375,79 @@ Adjust the persistence section and the PostgreSQL configuration to customize sto
    * Use read-only file systems where possible
 
 By following this guide, you should be able to successfully containerize and deploy the grimOS microservices stack with Kubernetes and Helm.
+
+## Service Discovery with Kubernetes DNS
+
+Kubernetes provides a built-in DNS service that allows services to discover each other by name within the cluster. This is essential for internal microservice communication in grimOS.
+
+### Configuration
+
+1. **Ensure CoreDNS is Enabled**
+   CoreDNS is the default DNS server for Kubernetes. Verify that it is running in your cluster:
+   ```bash
+   kubectl get pods -n kube-system -l k8s-app=kube-dns
+   ```
+   You should see pods for CoreDNS running.
+
+2. **Service Naming Convention**
+   - Services can be accessed using the format: `<service-name>.<namespace>.svc.cluster.local`
+   - For example, a service named `auth-service` in the `default` namespace can be accessed as:
+     ```
+     auth-service.default.svc.cluster.local
+     ```
+
+3. **DNS Policy**
+   Ensure that pods have the correct DNS policy. By default, pods inherit the cluster's DNS settings. You can explicitly set the DNS policy in your pod or deployment spec:
+   ```yaml
+   spec:
+     dnsPolicy: ClusterFirst
+   ```
+
+4. **Testing Service Discovery**
+   Use the `nslookup` or `dig` command within a pod to test DNS resolution:
+   ```bash
+   kubectl exec -it <pod-name> -- nslookup auth-service.default.svc.cluster.local
+   ```
+
+### Example Usage in grimOS
+
+- All grimOS microservices should use Kubernetes DNS for internal communication.
+- Ensure that service names are unique within their namespace.
+- Use environment variables or configuration files to store service names for easy updates.
+
+### Troubleshooting
+
+- If DNS resolution fails, check the CoreDNS logs:
+  ```bash
+  kubectl logs -n kube-system -l k8s-app=kube-dns
+  ```
+- Verify that the service and pod names are correct.
+- Ensure network policies are not blocking DNS traffic.
+
+By following these steps, you can ensure reliable service discovery for all grimOS microservices.
+
+## Private Docker Registry Integration
+
+To use a private Docker registry with Kubernetes, follow these steps:
+
+1. **Create a Docker Registry Secret**
+   ```bash
+   kubectl create secret docker-registry regcred \
+     --docker-server=${DOCKER_REGISTRY_URL} \
+     --docker-username=${DOCKER_REGISTRY_USERNAME} \
+     --docker-password=${DOCKER_REGISTRY_PASSWORD} \
+     --docker-email=${DOCKER_REGISTRY_EMAIL}
+   ```
+
+2. **Reference the Secret in Your Deployment**
+   Add the following to your Kubernetes deployment YAML:
+   ```yaml
+   spec:
+     imagePullSecrets:
+       - name: regcred
+   ```
+
+3. **Update Image References**
+   Ensure all image references include the private registry URL, e.g., `${DOCKER_REGISTRY_URL}/grimos-backend:latest`.
+
+By following these steps, you can securely pull images from the private Docker registry.

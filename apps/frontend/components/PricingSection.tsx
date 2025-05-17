@@ -1,10 +1,10 @@
+// filepath: /home/brylow/grimOS/apps/frontend/components/PricingSection.tsx
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import TierComparison from "./TierComparison";
 import { useLocation } from "wouter";
-import { SignedOut, SignedIn } from "@clerk/clerk-react";
 
 const pricingPlans = [
   {
@@ -125,29 +125,7 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
-                <SignedIn>
-                  <Button 
-                    className={
-                      plan.highlighted
-                        ? `w-full bg-[${plan.checkColor}] hover:bg-[${plan.checkColor}]/90 text-white px-6 py-3 h-auto rounded-xl text-lg font-medium`
-                        : `w-full ${plan.colorClass} hover:bg-[${plan.checkColor}]/10 text-white px-6 py-3 h-auto rounded-xl text-lg font-medium`
-                    }
-                    style={
-                      plan.highlighted 
-                        ? {backgroundColor: plan.checkColor} 
-                        : {}
-                    }
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    <span className={
-                      plan.highlighted ? "" : `btn-hover-effect${index === 2 ? '-accent' : index === 0 ? '' : '-secondary'}`
-                    }>
-                      Go to Dashboard
-                    </span>
-                  </Button>
-                </SignedIn>
-
-                <SignedOut>
+                <div className="mt-6">
                   <Button 
                     className={
                       plan.highlighted
@@ -167,7 +145,7 @@ export default function PricingSection() {
                       {plan.ctaText}
                     </span>
                   </Button>
-                </SignedOut>
+                </div>
               </div>
             </motion.div>
           ))}

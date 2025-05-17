@@ -117,5 +117,6 @@
   },
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "IDX.aI.enableInlineCompletion": true,
-  "IDX.aI.enableCodebaseIndexing": true
+  "IDX.aI.enableCodebaseIndexing": true,
+  "compile-hero.disable-compile-files-on-did-save-code": false
 }

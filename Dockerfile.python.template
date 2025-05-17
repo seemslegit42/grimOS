@@ -1,0 +1,55 @@
+\
+# Dockerfile for Python FastAPI microservices
+# Using a multi-stage build for smaller and more secure images
+
+# --- Builder Stage ---
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+
+# Install poetry
+RUN pip install poetry
+
+# Copy only files necessary for dependency installation
+COPY pyproject.toml poetry.lock ./
+
+# Install dependencies
+# --no-dev: Exclude development dependencies
+# --no-root: Do not install the project itself as editable, only dependencies
+RUN poetry install --no-dev --no-root
+
+# --- Runner Stage ---
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Create a non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Copy installed dependencies from the builder stage
+COPY --from=builder /app/.venv ./.venv
+
+# Set PATH to include the virtual environment's executables
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy the application code
+# Ensure this COPY command comes *after* dependency installation to leverage Docker layer caching
+COPY . .
+
+# Ensure the appuser owns the application files
+RUN chown -R appuser:appuser /app
+
+# Switch to the non-root user
+USER appuser
+
+# Expose the port the app runs on (default for FastAPI/Uvicorn is 8000)
+EXPOSE 8000
+
+# Command to run the application
+# Replace 'your_main_module:app' with the actual location of your FastAPI app instance
+# e.g., 'main:app' if your FastAPI app is in 'main.py'
+# Use 0.0.0.0 to bind to all network interfaces
+CMD ["uvicorn", "your_main_module:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Example: If your FastAPI app instance is in 'app/main.py' and named 'app', the CMD would be:
+# CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

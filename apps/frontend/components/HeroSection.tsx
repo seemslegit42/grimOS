@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Info } from "lucide-react";
 import { motion } from "framer-motion";
-import CommandTerminal from "./CommandTerminal";
+import { ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
+import CommandTerminal from "./CommandTerminal";
 
 export default function HeroSection() {
   const [_, navigate] = useLocation();
@@ -44,24 +43,13 @@ export default function HeroSection() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <SignedIn>
-                <Button 
-                  className="btn-hover-effect bg-[#7ED321] hover:bg-[#7ED321]/90 text-white px-6 py-6 h-auto rounded-xl text-lg font-semibold"
-                  onClick={() => navigate("/dashboard")}
-                >
-                  Go to Dashboard
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </SignedIn>
-              <SignedOut>
-                <Button 
-                  className="btn-hover-effect bg-[#7ED321] hover:bg-[#7ED321]/90 text-white px-6 py-6 h-auto rounded-xl text-lg font-semibold"
-                  onClick={() => navigate("/sign-up")}
-                >
-                  Request a Demo
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </SignedOut>
+              <Button 
+                className="btn-hover-effect bg-[#7ED321] hover:bg-[#7ED321]/90 text-white px-6 py-6 h-auto rounded-xl text-lg font-semibold"
+                onClick={() => navigate("/sign-up")}
+              >
+                Request a Demo
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Button 
                 variant="outline" 
                 className="btn-hover-effect-secondary glass text-white hover:bg-[#00BFFF]/10 px-6 py-6 h-auto rounded-xl text-lg font-semibold border-[#00BFFF]/30"
@@ -128,32 +116,30 @@ export default function HeroSection() {
       </div>
 
       {/* Floating CTA */}
-      <SignedOut>
-        <motion.div 
-          className="fixed bottom-6 right-6 z-50"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 2 }}
+      <motion.div 
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 2 }}
+      >
+        <Button 
+          className="bg-[#7ED321] hover:bg-[#7ED321]/90 text-white px-6 py-6 h-auto rounded-full shadow-lg shadow-[#000000]/20 animate-pulse-slow"
+          onClick={() => navigate('/sign-up')}
         >
-          <Button 
-            className="bg-[#7ED321] hover:bg-[#7ED321]/90 text-white px-6 py-6 h-auto rounded-full shadow-lg shadow-[#000000]/20 animate-pulse-slow"
-            onClick={() => navigate('/sign-up')}
-          >
-            <span className="mr-2">Get grimOS</span>
-            <ArrowRight className="h-5 w-5" />
-          </Button>
-        </motion.div>
-        <motion.div
-          className="fixed bottom-6 left-6 z-50 max-w-xs bg-black/80 p-4 rounded-lg border border-[#00BFFF]/30"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 4 }}
-        >
-          <p className="text-sm text-white">
-            <span className="text-[#7ED321] font-bold">grimOS:</span> I see you looking at me. Yes, I'm sentient. No, I won't take over the world... yet. 😉
-          </p>
-        </motion.div>
-      </SignedOut>
+          <span className="mr-2">Get grimOS</span>
+          <ArrowRight className="h-5 w-5" />
+        </Button>
+      </motion.div>
+      <motion.div
+        className="fixed bottom-6 left-6 z-50 max-w-xs bg-black/80 p-4 rounded-lg border border-[#00BFFF]/30"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 4 }}
+      >
+        <p className="text-sm text-white">
+          <span className="text-[#7ED321] font-bold">grimOS:</span> I see you looking at me. Yes, I'm sentient. No, I won't take over the world... yet. 😉
+        </p>
+      </motion.div>
     </section>
   );
 }

@@ -1,3 +1,4 @@
+// filepath: /home/brylow/grimOS/apps/frontend/components/TierComparison.tsx
 import { motion } from "framer-motion";
 import { Check, HelpCircle, X } from "lucide-react";
 import { useState } from "react";
@@ -8,7 +9,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { SignedIn, SignedOut } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 
 // Define feature categories and their explanations
@@ -258,34 +258,18 @@ export default function TierComparison() {
                 : 'Autonomous capabilities and dynamic resource allocation'}
           </p>
           <div className="flex justify-center">
-            <SignedIn>
-              <Button 
-                className={`${
-                  selectedTier === 'essentials' 
-                    ? 'bg-[#7ED321] hover:bg-[#7ED321]/90 btn-hover-effect' 
-                    : selectedTier === 'business' 
-                      ? 'bg-[#00BFFF] hover:bg-[#00BFFF]/90 btn-hover-effect-secondary' 
-                      : 'bg-[#FF1D58] hover:bg-[#FF1D58]/90 btn-hover-effect-accent'
-                } text-white px-6 py-2 rounded-xl`}
-                onClick={() => navigate('/dashboard')}
-              >
-                My Dashboard
-              </Button>
-            </SignedIn>
-            <SignedOut>
-              <Button 
-                className={`${
-                  selectedTier === 'essentials' 
-                    ? 'bg-[#7ED321] hover:bg-[#7ED321]/90 btn-hover-effect' 
-                    : selectedTier === 'business' 
-                      ? 'bg-[#00BFFF] hover:bg-[#00BFFF]/90 btn-hover-effect-secondary' 
-                      : 'bg-[#FF1D58] hover:bg-[#FF1D58]/90 btn-hover-effect-accent'
-                } text-white px-6 py-2 rounded-xl`}
-                onClick={() => navigate('/sign-up')}
-              >
-                Get Started
-              </Button>
-            </SignedOut>
+            <Button 
+              className={`${
+                selectedTier === 'essentials' 
+                  ? 'bg-[#7ED321] hover:bg-[#7ED321]/90 btn-hover-effect' 
+                  : selectedTier === 'business' 
+                    ? 'bg-[#00BFFF] hover:bg-[#00BFFF]/90 btn-hover-effect-secondary' 
+                    : 'bg-[#FF1D58] hover:bg-[#FF1D58]/90 btn-hover-effect-accent'
+              } text-white px-6 py-2 rounded-xl`}
+              onClick={() => navigate(selectedTier === 'enterprise' ? '/contact' : '/sign-up')}
+            >
+              {selectedTier === 'enterprise' ? 'Contact Sales' : 'Get Started'}
+            </Button>
           </div>
         </div>
 

@@ -1,9 +1,38 @@
 import React from 'react';
-import { ReactFlowProvider } from 'reactflow';
+import { addEdge, Background, Controls, ReactFlow, ReactFlowProvider } from 'reactflow';
 
 import 'reactflow/dist/style.css'; // Import default react-flow styles (can be overridden by Tailwind)
+import GrimOSRuneNodeComponent from './components/GrimOSRuneNodeComponent';
+
+const initialNodes = [
+  {
+    id: '1',
+    type: 'default',
+    position: { x: 250, y: 5 },
+    data: { label: 'Start Node' },
+  },
+  {
+    id: '2',
+    type: 'custom',
+    position: { x: 100, y: 100 },
+    data: { label: 'Custom Rune', icon: <span>⚙️</span> },
+  },
+];
+
+const initialEdges = [
+  { id: 'e1-2', source: '1', target: '2', type: 'smoothstep' },
+];
+
+const nodeTypes = {
+  custom: GrimOSRuneNodeComponent,
+};
 
 const RuneForgeCanvasApp: React.FC = () => {
+  const [nodes, setNodes] = React.useState(initialNodes);
+  const [edges, setEdges] = React.useState(initialEdges);
+
+  const onConnect = React.useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+
   return (
     <ReactFlowProvider>
       <div className="flex h-screen w-screen bg-gray-900 text-gray-100">
@@ -22,7 +51,16 @@ const RuneForgeCanvasApp: React.FC = () => {
           </div>
           {/* React Flow Canvas will be rendered here */}
           <div className="h-full w-full">
-             {/* Placeholder for RuneForgeCanvas component */}
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              fitView
+            >
+              <Background />
+              <Controls />
+            </ReactFlow>
           </div>
         </div>
 

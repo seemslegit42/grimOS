@@ -1,7 +1,6 @@
 'use client'
 
 import { GlassmorphicCard } from "@/components/ui/GlassmorphicCard"
-import { SignUp } from "@clerk/nextjs"
 
 export default function SignUpPage() {
   return (
@@ -9,7 +8,10 @@ export default function SignUpPage() {
       <GlassmorphicCard className="max-w-md w-full p-4">
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-bold text-primary-accent mb-6">Sign Up</h1>
-          <SignUp />
+          <p className="text-center text-gray-400 mb-4">
+            Authentication system has been upgraded from Clerk.
+            New authentication system coming soon.
+          </p>
         </div>
       </GlassmorphicCard>
     </main>

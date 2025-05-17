@@ -137,6 +137,42 @@ The platform can be deployed using:
    - Helm charts for each component
    - Infrastructure as Code with Terraform
 
+## CI/CD Pipeline
+
+The CI/CD pipeline is configured using GitHub Actions. It includes the following jobs:
+
+- **Linting**: Ensures code quality using ESLint.
+- **Type Checking**: Validates TypeScript types.
+- **Testing**: Runs unit and integration tests.
+- **Docker Image Build and Push**: Builds and pushes Docker images to the private registry.
+
+Refer to `.github/workflows/ci.yml` for details.
+
+## Dockerization
+
+Dockerfiles are provided for backend and frontend services:
+
+- **Backend**: Located in `services/backend/Dockerfile`, uses Python 3.11-slim.
+- **Frontend**: Located in `apps/frontend/Dockerfile`, uses Node.js 18-alpine and Nginx.
+
+## Kubernetes Deployment
+
+Kubernetes configurations are managed using Helm charts. Key components include:
+
+- **Backend Deployment**: Defined in `charts/grimos-backend/templates/deployment.yaml`.
+- **API Gateway**: Configured in `charts/api-gateway/values.yaml`.
+
+## Centralized Logging and Monitoring
+
+- **Logging**: Uses Elasticsearch, Kibana, and Logstash. Configurations are in `charts/logging-stack/values.yaml`.
+- **Monitoring**: Uses Prometheus and Grafana. Configurations are in `charts/monitoring-stack/values.yaml`.
+
+## Secret Management
+
+Secrets are managed using HashiCorp Vault and Kubernetes Secrets. Configurations are in `charts/secrets/values.yaml`.
+
+Refer to the respective directories for detailed configurations.
+
 ## Contribution Guidelines
 
 1. Create a feature branch from `main`

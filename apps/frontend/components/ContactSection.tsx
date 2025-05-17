@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
-import { 
-  MapPin, 
-  Mail, 
-  Phone, 
-  Twitter, 
-  Linkedin, 
-  Github, 
-  Shield,
-  Send
+import {
+    Github,
+    Linkedin,
+    Mail,
+    MapPin,
+    Phone,
+    Send,
+    Shield,
+    Twitter
 } from "lucide-react";
 
 export default function ContactSection() {
@@ -61,7 +61,7 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <h4 className="font-medium mb-1">Enterprise Contact</h4>
-                    <p className="text-[#FFFFFF]/70">enterprise@bitbrewinc.com</p>
+                    <p className="text-[#FFFFFF]/70">enterprise@grimoire.com</p>
                   </div>
                 </div>
                 

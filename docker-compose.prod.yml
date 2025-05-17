@@ -165,6 +165,9 @@ services:
         limits:
           cpus: '1'
           memory: 2G
+    image: ${DOCKER_REGISTRY_URL}/grimos-backend:latest
+    imagePullSecrets:
+      - name: regcred
 
   cognitive-core:
     build:

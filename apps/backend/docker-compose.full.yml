@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # Import services from base docker-compose.yml file
+  db:
+    extends:
+      file: docker-compose.yml
+      service: db
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  backend:
+    extends:
+      file: docker-compose.yml
+      service: backend
+    depends_on:
+      - db
+      - redis
+      - kong
+
+  # Import services from monitoring stack
+  prometheus:
+    extends:
+      file: docker-compose.monitoring.yml
+      service: prometheus
+
+  grafana:
+    extends:
+      file: docker-compose.monitoring.yml
+      service: grafana
+    depends_on:
+      - prometheus
+
+  node-exporter:
+    extends:
+      file: docker-compose.monitoring.yml
+      service: node-exporter
+
+  alertmanager:
+    extends:
+      file: docker-compose.monitoring.yml
+      service: alertmanager
+    depends_on:
+      - prometheus
+
+  # Import services from Kong API Gateway
+  kong-database:
+    extends:
+      file: docker-compose.kong.yml
+      service: kong-database
+
+  kong-migrations:
+    extends:
+      file: docker-compose.kong.yml
+      service: kong-migrations
+    depends_on:
+      - kong-database
+
+  kong:
+    extends:
+      file: docker-compose.kong.yml
+      service: kong
+    depends_on:
+      - kong-database
+      - kong-migrations
+
+  konga:
+    extends:
+      file: docker-compose.kong.yml
+      service: konga
+    depends_on:
+      - kong
+      - kong-database
+
+  # Kong configuration service
+  kong-config:
+    image: alpine:latest
+    container_name: kong-config
+    volumes:
+      - ./kong:/scripts
+    command: sh /scripts/configure-kong.sh
+    networks:
+      - grimos-network
+    depends_on:
+      - kong
+
+networks:
+  grimos-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:
+  kong_data:

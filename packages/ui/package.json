@@ -1,0 +1,49 @@
+{
+  "name": "@grimos/ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./globals.css": "./src/styles/globals.css",
+    "./postcss.config": "./postcss.config.mjs",
+    "./tailwind.config": "./tailwind.config.js",
+    "./lib/*": "./src/lib/*.ts",
+    "./components/*": "./src/components/*.tsx",
+    "./hooks/*": "./src/hooks/*.ts"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --external react && pnpm run build:css",
+    "build:css": "tailwindcss -i ./src/styles/globals.css -o ./dist/globals.css --minify",
+    "dev": "pnpm run build --watch",
+    "lint": "eslint . --max-warnings 0",
+    "clean": "rm -rf .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.358.0",
+    "tailwind-merge": "^2.2.2"
+  },
+  "devDependencies": {
+    "@grimos/eslint-config": "workspace:*",
+    "@grimos/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.0.0-alpha.13", 
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "postcss": "^8.4.35",
+    "react": "^18.2.0",
+    "tailwindcss": "^3.4.1", 
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  }
+}
